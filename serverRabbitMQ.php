@@ -48,8 +48,18 @@ function login($username, $password) {
 	$query = array('username' => $username, 'password' => $password);
 	$result = $userCollection->findOne($query);
 
-	if(!empty($result)) { 
+	if(!empty($result) && password_verify ($password, $user['password'])) { 
 		echo "User was successfully logged in.";
+
+		$session_key = creatSessionKey(); // session_key is the variable holding generated key
+		expiration = time() + 3600 // Professor Kehoe said to utilize epoch
+
+		userCollection->updateOne(
+			["username" => $username,
+        	"keySession" => $session_key, // NOTE: keySession is database's session key variable,  session_key is server's variable
+        	"sessionExpiration" => expiration
+			]
+		);
 	} else {
 		echo "Credentials were not authenticated.";
 	}
