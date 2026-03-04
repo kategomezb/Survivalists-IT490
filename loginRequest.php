@@ -13,7 +13,10 @@ $loginRequest = [
 
 $response = $client->send_request($loginRequest);
 
-if($response['status'] == 'success') {
+$expiration = time() + 3600;
+
+if($response['returnCode'] == '0') {
+	setcookie("Session key: ", $response['session_key'], $expiration);
 	echo 'Login success!';
 	exit();
 } else {
