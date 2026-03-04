@@ -62,7 +62,7 @@ function login($username, $password) {
 			]]
 		);
 
-    	return array("returnCode" => '0', "message" => "User was logged in successfully.");
+    	return array("returnCode" => '0', "session_key" => $session_key, "message" => "User was logged in successfully.");
 
 	} else {
         return array("returnCode" => '1', "message" => "Invalid login.");
