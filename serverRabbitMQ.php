@@ -62,10 +62,10 @@ function login($username, $password) {
 			]]
 		);
 
-    	return array("status" => 'success', "message" => "User was logged in successfully."
+    	return array("status" => 'success', "message" => "User was logged in successfully.");
 
 	} else {
-        return array("status" => 'fail', "message" => "Invalid login."
+        return array("status" => 'fail', "message" => "Invalid login.");
 	}
 }
 
