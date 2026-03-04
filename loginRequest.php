@@ -13,8 +13,8 @@ $loginRequest = [
 
 $response = $client->send_request($loginRequest);
 
-if(response['status'] == 'success') {
-	header('Location: dashboard.html');
+if($response['status'] == 'success') {
+	echo 'Login success!'
 	exit();
 } else {
 	header('Location: login.html');
