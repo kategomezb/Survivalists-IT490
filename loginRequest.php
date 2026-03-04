@@ -13,7 +13,7 @@ $loginRequest = [
 
 $response = $client->send_request($loginRequest);
 
-if($response['status'] == 'success') {
+if($response['returnCode'] == '0') {
 	echo 'Login success!';
 	exit();
 } else {
