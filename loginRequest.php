@@ -14,7 +14,7 @@ $loginRequest = [
 $response = $client->send_request($loginRequest);
 
 if($response['status'] == 'success') {
-	echo 'Login success!'
+	echo 'Login success!';
 	exit();
 } else {
 	header('Location: login.html');
