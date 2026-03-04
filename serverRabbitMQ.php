@@ -37,6 +37,8 @@ function registration($username, $password) {
         "sessionExpiration" => null
     ));
 
+	print_r(array('returnCode' => '0', 'message' => 'The user was registered.', 'username' => $username, 'password' => $password));
+
     return array("returnCode" => '0', "message" => "The user was registered.");
 }
 
@@ -61,11 +63,16 @@ function login($username, $password) {
         			"sessionExpiration" => $expiration
 			]]
 		);
+                print_r(array('returnCode' => '0', 'message' => 'User was logged in successfully.', 'username' => $username, 'session_key' => $session_key));
 
     	return array("returnCode" => '0', "session_key" => $session_key, "message" => "User was logged in successfully.");
 
 	} else {
+
+                print_r(array("returnCode" => '1', "message" => "Invalid login."));
+
         return array("returnCode" => '1', "message" => "Invalid login.");
+
 	}
 }
 
