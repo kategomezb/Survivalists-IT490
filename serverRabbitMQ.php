@@ -45,10 +45,10 @@ function login($username, $password) {
 
 	$userCollection = $database->reg_users;
 
-	$query = array('username' => $username, 'password' => $password);
+	$query = array('username' => $username); // 'password' => $password);
 	$result = $userCollection->findOne($query);
 
-	if(!empty($result) && password_verify($password, $result['password'])) { 
+	if($result && password_verify($password, $result['password'])) { 
 		echo "User was successfully logged in.";
 
 		$session_key = createSessionKey(); // session_key is the variable holding generated key
