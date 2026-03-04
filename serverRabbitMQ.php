@@ -45,7 +45,7 @@ function login($username, $password) {
 
 	$userCollection = $database->reg_users;
 
-	$query = array('username' => $username, 'password' => $password)
+	$query = array('username' => $username, 'password' => $password);
 	$result = $userCollection->findOne($query);
 
 	if(!empty($result)) { 
