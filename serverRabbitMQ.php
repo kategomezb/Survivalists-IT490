@@ -40,9 +40,25 @@ function registration($username, $password) {
     return array("returnCode" => '0', "message" => "The user was registered.");
 }
 
+function login($username, $password) {
+	global $database;
+
+	$userCollection = $database->reg_users;
+
+	$query = array('username' => $username, 'password' => $password)
+	$result = $userCollection->findOne($query);
+
+	if(!empty($result)) { 
+		echo "User was successfully logged in.";
+	} else {
+		echo "Credentials were not authenticated.";
+	}
+}
+
 function requestProcessor($request) {
     if (!isset($request['type'])) {
         return array("returnCode" => '1', "message" => "This is an invalid request type.");
+
     }
 
     switch ($request['type']) {
