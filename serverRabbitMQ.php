@@ -37,19 +37,58 @@ function registration($username, $password) {
         "sessionExpiration" => null
     ));
 
+	print_r(array('returnCode' => '0', 'message' => 'The user was registered.', 'username' => $username, 'password' => $password));
+
     return array("returnCode" => '0', "message" => "The user was registered.");
+}
+
+function login($username, $password) {
+	global $database;
+
+	$userCollection = $database->reg_users;
+
+	$query = array('username' => $username); // 'password' => $password);
+	$result = $userCollection->findOne($query);
+
+	if($result && password_verify($password, $result['password'])) { 
+		echo "User was successfully logged in.";
+
+		$session_key = createSessionKey(); // session_key is the variable holding generated key
+		$expiration = time() + 3600; // Professor Kehoe said to utilize epoch
+
+		$userCollection->updateOne(
+			["username" => $username],
+        		['$set' => [
+				"keySession" => $session_key, // NOTE: keySession is database's session key variable,  session_key is server's variable
+        			"sessionExpiration" => $expiration
+			]]
+		);
+                print_r(array('returnCode' => '0', 'message' => 'User was logged in successfully.', 'username' => $username, 'session_key' => $session_key));
+
+    	return array("returnCode" => '0', "session_key" => $session_key, "message" => "User was logged in successfully.");
+
+	} else {
+
+                print_r(array("returnCode" => '1', "message" => "Invalid login."));
+
+        return array("returnCode" => '1', "message" => "Invalid login.");
+
+	}
 }
 
 function requestProcessor($request) {
     if (!isset($request['type'])) {
         return array("returnCode" => '1', "message" => "This is an invalid request type.");
+
     }
 
     switch ($request['type']) {
         case "registration":
             return registration($request['username'], $request['password']);
+	case "login":
+	    return login($request['username'],$request['password']); 
     }
-    return array("returnCode" => '1', "message" => "Server received request and processed");
+    return array("returnCode" => '0', "message" => "Server received request and processed");
 }
 
 $server = new rabbitMQServer("testRabbitMQ.ini", "testServer");
