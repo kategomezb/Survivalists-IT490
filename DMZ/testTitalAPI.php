@@ -2,8 +2,10 @@
 
 require_once ('api/tidalAPI.php');
 
-$result = searchArtist("jayz");
+// test for data retrieval from the API
+$input = readline("Enter an artist, album, or track to search: ");
 
+$result = userSearch($input);
 print_r($result);
 
 ?>
