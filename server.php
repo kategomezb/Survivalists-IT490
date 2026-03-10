@@ -152,11 +152,112 @@ function review($session_key, $item_id, $item_type, $rating, $review_text) {
 		'timestamp' => time()
 	]);
 	return [
-		"status" => "sucess",
-		"message" => "Review submitted sucessfully!"
+		"status" => "success",
+		"message" => "Review submitted successfully!"
 	];
 }
 
+// recommendation function (mock data currently)
+function recommendation($session_key) {
+	global $db;
+
+	// validate the session to get the username
+	$users = $db->reg_users;
+	$user = $users->findOne(['session_key' => $session_key]);
+
+	if($user === null) {
+		return [
+			"status" => "error",
+			"message" => "You must be logged in to get recommendations."
+		];
+	}
+
+	$username = $user['username'];
+
+	// get all reviews by this user
+	$reviews = $db->reviews;
+	$userReviews = $reviews->find(['username' => $username]);
+
+	// genre metadata keyed by item_id
+	// TODO: Replace with real Tidal API from DMZ
+	$GenreData = [
+		'default' => [
+			'genres' => ['Pop', 'Rock'],
+			'title' => 'Unknown',
+			'artist' => 'Unknown',
+			'item_type' => 'song'
+		]
+	];
+
+	// tally genre scores based on user ratings
+	$genreScores = [];
+	$reviewedItems = [];
+
+	foreach ($userReviews as $review) {
+		$itemId = $review['item_id'];
+		$rating = $review['rating'];
+		$reviewedItems[] = $itemId;
+
+		// TODO: replace mock data with real Tidal API response from DMZ
+		$metadata = $GenreData[$itemId] ?? $GenreData['default'];
+		$genres = $metadata['genres'];
+
+		foreach ($genres as $genre) {
+			if (!isset($genreScores[$genre])) {
+				$genreScores[$genre] = 0;
+			}
+			$genreScores[$genre] += $rating;
+		}
+	}
+
+	// sort genres by score, highest first
+	arsort($genreScores);
+	$topGenres = array_slice(array_keys($genreScores), 0, 3);
+
+	// mock recommendations by genre
+	// TODO: replace with real Tidal API calls from DMZ
+	$recommendations = [
+		'Rock' => [
+			['title' => 'Bohemian Rhapsody', 'artist' => 'Queen', 'genres' => ['Rock', 'Classic Rock'], 'item_type' => 'song', 'reason' => 'Based on your Rock reviews'],
+			['title' => 'Back in Black', 'artist' => 'AC/DC', 'genres' => ['Rock', 'Hard Rock'], 'item_type' => 'song', 'reason' => 'Popular in Rock']
+		],
+		'Pop' => [
+			['title' => 'Blinding Lights', 'artist' => 'The Weeknd', 'genres' => ['Pop', 'Synth-pop'], 'item_type' => 'song', 'reason' => 'Based on your Pop reviews'],
+			['title' => 'Anti-Hero', 'artist' => 'Taylor Swift', 'genres' => ['Pop'], 'item_type' => 'song', 'reason' => 'Popular in Pop']
+		],
+		'Alternative' => [
+			['title' => 'Smells Like Teen Spirit', 'artist' => 'Nirvana', 'genres' => ['Alternative', 'Grunge'], 'item_type' => 'song', 'reason' => 'Based on your Alternative reviews'],
+		],
+		'Hip-Hop' => [
+			['title' => 'HUMBLE.', 'artist' => 'Kendrick Lamar', 'genres' => ['Hip-Hop', 'Rap'], 'item_type' => 'song', 'reason' => 'Based on your Hip-Hop reviews'],
+		],
+	];
+
+	// build recommendations from list from top genres
+	$buildRecommendations =[];
+	foreach($topGenres as $genre) {
+		if (isset($recommendations[$genre])) {
+			foreach ($recommendations[$genre] as $rec) {
+				$buildRecommendations[] = $rec;
+			}
+		}
+	}
+
+	// if no reviews have been made yet, return generic popular recommendations
+	if (empty($buildRecommendations)) {
+		$buildRecommendations = [
+			['title' => 'Blinding Lights', 'artist' => 'The Weeknd', 'genres' => ['Pop', 'Synth-pop'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
+			['title' => 'Bohemian Rhapsody', 'artist' => 'Queen', 'genres' => ['Rock', 'Classic Rock'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
+			['title' => 'HUMBLE.', 'artist' => 'Kendrick Lamar', 'genres' => ['Hip-Hop'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
+		];
+	}
+	
+	return [
+		"status" => "success",
+		"recommendations" => $buildRecommendations,
+		"top_genres" => $topGenres
+	];
+}
 function request_processor($req){
 	//echo "Received Request".PHP_EOL;
 	//echo "<pre>" . var_dump($req) . "</pre>";
@@ -177,7 +278,7 @@ function request_processor($req){
 		case "validate_session":
 			return validate($req['session_id']);
 		// review case
-		case"review":
+		case "review":
 			return review(
 				$req['session_key'],
 				$req['item_id'],
@@ -185,6 +286,9 @@ function request_processor($req){
 				$req['rating'],
 				$req['review_text'] ?? ''
 			);
+		// recommendation case
+		case "recommendation":
+			return recommendation($req['session_key']);
 		case "echo":
 			return array("return_code"=>'0', "message"=>"Echo: " .$req["message"]);
 	}
