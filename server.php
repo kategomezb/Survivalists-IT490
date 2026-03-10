@@ -124,6 +124,39 @@ function validate($session_id) {
 	}
 }
 
+// review login
+function review($session_key, $item_id, $item_type, $rating, $review_text) {
+	global $db;
+
+	// validate the session to get the username
+	$users = $db->reg_users;
+	$user = $users->findOne(['session_key' => $session_key]);
+
+	if($user === null) {
+		return [
+			"status" => "error",
+			"message" => "You must be logged in to leave a review."
+		];
+	}
+
+	$username =$user['username'];
+
+	// store the review in 'reviews' collection
+	$reviews = $db->reviews;
+	$reviews->insertOne([
+		'username' => $username,
+		'item_id' => $item_id,
+		'item_type' => $item_type,
+		'rating' => (int)$rating,
+		'review_text' => $review_text,
+		'timestamp' => time()
+	]);
+	return [
+		"status" => "sucess",
+		"message" => "Review submitted sucessfully!"
+	];
+}
+
 function request_processor($req){
 	//echo "Received Request".PHP_EOL;
 	//echo "<pre>" . var_dump($req) . "</pre>";
@@ -143,6 +176,15 @@ function request_processor($req){
             return register($req['username'], $req['password']);
 		case "validate_session":
 			return validate($req['session_id']);
+		// review case
+		case"review":
+			return review(
+				$req['session_key'],
+				$req['item_id'],
+				$req['item_type'],
+				$req['rating'],
+				$req['review_text'] ?? ''
+			);
 		case "echo":
 			return array("return_code"=>'0', "message"=>"Echo: " .$req["message"]);
 	}
