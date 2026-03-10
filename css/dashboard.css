@@ -98,3 +98,16 @@ h1 {
 .reviewLink:hover {
     color: #F92C85;
 }
+
+.actionLink {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.actionLink:hover {
+    color: #F92C85;
+}
