@@ -86,3 +86,15 @@ h1 {
 .logoutButton:hover {
     text-decoration: underline;
 }
+
+.reviewLink {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.reviewLink:hover {
+    color: #F92C85;
+}
