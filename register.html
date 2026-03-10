@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Survivalists - Register</title>
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+
+    <div class="card">
+        <div class="image">
+            <div class="outerGlow"></div>
+            
+            <!-- I left the animation delay in 1.5 because it looks more natural, and it fits the space -->
+            <div class="outerGlow" style="animation-delay: 1.5s;"></div>
+            
+            <!-- I got the image from here: https://unsplash.com/photos/a-close-up-of-a-shiny-surface-with-a-blue-sky-in-the-background-OHPdgstNFGs -->
+            <div class="profile">
+                <img src="images/registrationImage.jpg" alt="Profile Picture">
+            </div>
+        </div>
+        <div class="form">
+            <h2>Join <strong>SURVIVALISTS</strong></h2>
+            <form method="post" action="registerRequest.php">
+                <div class="input">
+                    <span class="labels">New Username</span>
+                    <input type="text" name="username" class="field-style" placeholder="Please type your new username" required>
+                </div>
+                <div class="input-box">
+                    <span class="labels">New Password</span>
+                    <input type="password" name="password" class="field-style" placeholder="Please type your new password" required>
+                </div>
+                <input type="submit" value="Register" class="registerButton">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,137 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HOME</title>
-    <style>
-         /* I picked this font but we can change it later on. Link that i accessed:
-        https://fonts.google.com/specimen/Playfair+Display
-        */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
-        
-        /* I did this design because I thought it would look good, but we can change colors and font. I got the background color from here:
-        https://designshack.net/articles/trends/best-website-color-schemes/
-        */
-        body {
-            
-            background-color: #FDF5DF; 
-            font-family: 'Playfair Display', serif;
-            height: 100vh;
-            margin: 0; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        
-        }
-
-        .page {
-            display: grid;
-            grid-template-columns: 45% 45%; /* i reduced this since it was not fitting the screen on the vm */
-            gap: 80px;
-            max-width: 1200px;
-            padding: 40px;
-            align-items: center;
-            text-align: left; 
-            
-        }
-
-        h1 {
-            font-size: 90px;
-            line-height: 1.1;
-            font-weight: 700;
-            color: #5EBEC4;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 22px;
-            color: #1b1b1b;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-
-        .configButtons {
-            display: flex;
-            gap: 15px;
-        }
-
-        button {
-            padding: 16px 40px;
-            border-radius: 50px;
-            border: none;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .loginButton { 
-            background: #5EBEC4; 
-            color: white; 
-        }
-        
-        .registerButton { 
-            background: white; 
-            color: #1b1b1b; 
-        }
-        
-        /* I got this effect from this website: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/transform-function/translateY */
-        button:hover { 
-            transform: translateY(-8px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .images {
-            display: grid;
-            grid-template-columns: 50% 50%; 
-            gap: 20px;
-        }
-        
-        /* This are the quares for the pictures, and the box-shadow effect i got it from here: 
-        https://www.w3schools.com/css//css3_shadows_box.asp
-        */
-        .shapeSquare {
-            width: 100%;
-            aspect-ratio: 1 / 1; 
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 3px 3px 10px #1b1b1b;
-        }
-
-        .shapeSquare img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: 0.5s;
-        }
-
-        /* I got this effect from here: 
-        https://www.youtube.com/shorts/oQQUfkvPvUw
-        */
-        .shapeSquare:hover img {
-            transform: scale(1.3); 
-        }
-
-
-    </style>
+    <title>SURVIVALISTS</title>
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-    <!-- this for the home so the users have the chance to pick if they wanna register or login. -->
+    <!-- this for the home so the users have the chance to pick if they wanna register or login. We can simplify this in the future since this is just for testing -->
     <div class="page">
         <div>
             <h1>Welcome to Survivalists</h1>
             <p>You just need to use the buttons below to access your account or register a new user:</p>
-
-            <div class="configButtons">
-                <form action="login.html">
-                    <button type="submit" class="loginButton">Login</button>
-                </form>
-                <form action="registration.html">
+    
+        <div class="configButtons">
+            <form action="login.html">
+                <button type="submit" class="loginButton">Login</button>
+            </form>
+                <form action="register.html">
                     <button type="submit" class="registerButton">Register</button>
-                </form>
-            </div>
+            </form>
         </div>
-        <!-- i got the images from: https://unsplash.com -->
+    </div>
         <!-- Link of each image I used:
         https://unsplash.com/photos/group-of-people-raising-there-hands-in-concert-aWXVxy8BSzc
         https://unsplash.com/photos/lighted-red-text-signage-1oKxSKSOowE
