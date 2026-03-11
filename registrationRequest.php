@@ -25,7 +25,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     $response = $client->send_request($request);
     if (isset($response['status']) && $response['status'] === 'success') {
         // this was on the professor's code but im checking if i can redirect the user to login after registering echo "Server response: " . $response['message']; 
-        header("Location: logn.html");
+        header("Location: login.html");
     exit();   
     }
     echo $response['message'] ?? 'Registration failed';
