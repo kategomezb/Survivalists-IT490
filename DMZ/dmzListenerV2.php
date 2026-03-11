@@ -91,7 +91,8 @@ function filterArtists($data){
             // making sure the item is an array and type is just artists
             // ref i used: https://www.php.net/manual/en/function.is-array.php
             if(is_array($item) && isset($item['type']) && $item['type'] == 'artists'){
-
+                
+                 
                 $artists[] = [
                     "id"=>$item['id'] ?? '',
                     "name"=>$item['attributes']['name'] ?? '',
@@ -106,6 +107,99 @@ function filterArtists($data){
 
     return $artists;
 }
+
+// i used the same logic and i used the same ref
+// https://www.php.net/manual/en/language.operators.comparison.php 
+
+function filterAlbums($data){
+
+    $albums = [];
+
+    // checking iif  the data exists
+    if(isset($data['data']) && is_array($data['data'])){
+
+        foreach($data['data'] as $item){
+
+            if(is_array($item) && isset($item['type']) && $item['type'] == 'albums'){
+
+                 // adding the album info
+                $albums[] = [
+                    "id"=>$item['id'] ?? '',
+                    "title"=>$item['attributes']['title'] ?? ''
+                 ];
+
+             }
+
+        }
+
+    }
+
+     // i need to include thsi part because something the info in included 
+    if(isset($data['included']) && is_array($data['included'])){
+
+        foreach($data['included'] as $item){
+
+            if(is_array($item) && isset($item['type']) && $item['type'] == 'albums'){
+
+                $albums[] = [
+                    "id"=>$item['id'] ?? '',
+                    "title"=>$item['attributes']['title'] ?? ''
+                ];
+
+            }
+
+        }
+
+    }
+
+    return $albums;
+}
+
+// i used the same logic and i used the same ref
+// https://www.php.net/manual/en/language.operators.comparison.php 
+function filterTracks($data){
+
+    $tracks = [];
+
+    if(isset($data['data']) && is_array($data['data'])){
+
+        foreach($data['data'] as $item){
+
+            if(is_array($item) && isset($item['type']) && $item['type'] == 'tracks'){
+
+		 // adding the track info 
+                $tracks[] = [
+                    "id"=>$item['id'] ?? '',
+                    "title"=>$item['attributes']['title'] ?? ''
+                  ];
+
+             }
+
+       }
+
+    }
+
+   // checking the include info again
+    if(isset($data['included']) && is_array($data['included'])){
+
+        foreach($data['included'] as $item){
+
+            if(is_array($item) && isset($item['type']) && $item['type'] == 'tracks'){
+
+                $tracks[] = [
+                    "id"=>$item['id'] ?? '',
+                    "title"=>$item['attributes']['title'] ?? ''
+                ];
+
+            }
+
+        }
+
+    }
+
+    /return $tracks;
+}
+
 
 $server = new rabbitMQServer("testRabbitMQ.ini","testDMZ");
 
