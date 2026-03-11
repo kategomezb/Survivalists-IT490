@@ -297,7 +297,7 @@ function requestProcessor($request) {
             return addFavoriteTrack($request['session_key'],$request['title'], $request['artist']);
 
         case "addFavoriteArtist": // will search artist library and populate selected artist to user_library
-            return addFavoriteArtist($request['$session_key'],$request['artist']);
+            return addFavoriteArtist($request['session_key'],$request['artist']);
 
         case "addFavoriteAlbum": // will search album library and populate selected album to user_library
             return addFavoriteAlbum($request['session_key'],$request['album'], $request['artist']);

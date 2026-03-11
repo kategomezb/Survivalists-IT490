@@ -1,10 +1,18 @@
+<?php
+    // session authentication
+	if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksforgeeks.org/php/php-cookies/
+		header('Location: login.html');
+		exit();
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Survivalists - Add to Favorites Page</title>
     
-    <style>
+       <style>
         /* I picked this font but we can change it later on */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
         
@@ -153,7 +161,11 @@
         <div class="form">
             <h2>Add to your favorites</strong></h2>
             
-            <form method="post" action="addFavoriteArtistRequest.php">
+            <form method="post" action="addFavoriteTrackRequest.php">
+                <div class="input">
+                    <span class="labels">Title</span>
+                    <input type="text" name="title" class="field-style" placeholder="Please type the title of the track." required>
+                </div>
 
                 <div class="input">
                     <span class="labels">Artist</span>
@@ -161,6 +173,8 @@
                 </div>
 
                 <input type="submit" value="Submit" class="loginButton">
+                                <a href="dashboard.php" class="href">Back to dashboard</a>
+
             </form>
         </div>
     </div>

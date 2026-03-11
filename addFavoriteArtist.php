@@ -1,3 +1,10 @@
+<?php
+    // session authentication
+	if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksforgeeks.org/php/php-cookies/
+		header('Location: login.html');
+		exit();
+	}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,11 +160,7 @@
         <div class="form">
             <h2>Add to your favorites</strong></h2>
             
-            <form method="post" action="addFavoriteAlbumRequest.php">
-                <div class="input">
-                    <span class="labels">Album</span>
-                    <input type="text" name="album" class="field-style" placeholder="Please type the album." required>
-                </div>
+            <form method="post" action="addFavoriteArtistRequest.php">
 
                 <div class="input">
                     <span class="labels">Artist</span>
@@ -165,6 +168,8 @@
                 </div>
 
                 <input type="submit" value="Submit" class="loginButton">
+                                                <a href="dashboard.php" class="href">Back to dashboard</a>
+
             </form>
         </div>
     </div>

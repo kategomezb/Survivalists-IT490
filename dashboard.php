@@ -103,6 +103,12 @@
         <div class="content">
             <p>This is our dashboard. I made the box extra big so there's actually room for the stuff we're supposed to add. 
                Remember that we can change everything if you don't like it.</p>
+                <a href="addFavoriteTrack.php" class="href">Add a favorite track</a>
+                <br>
+                <a href="addFavoriteArtist.php" class="href">Add a favorite artist</a>
+                <br>
+                <a href="addFavoriteAlbum.php" class="href">Add a favorite album</a>
+
         </div>
         <!-- I added the arrow effect on the login, register and dashboard because i saw it in one website and i thought it looked good and modern. I got the link from:
         https://www.w3schools.com/charsets/ref_utf_arrows.asp -->
