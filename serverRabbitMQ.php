@@ -158,7 +158,7 @@ function review($session_key, $item_id, $item_type, $rating, $review_text) {
 	];
 }
 
-// recommendation function (mock data currently)
+// recommendation function
 function recommendation($session_key) {
 	global $db;
 
@@ -179,86 +179,70 @@ function recommendation($session_key) {
 	$reviews = $db->reviews;
 	$userReviews = $reviews->find(['username' => $username]);
 
-	// genre metadata keyed by item_id
-	// TODO: Replace with real Tidal API from DMZ
-	$GenreData = [
-		'default' => [
-			'genres' => ['Pop', 'Rock'],
-			'title' => 'Unknown',
-			'artist' => 'Unknown',
-			'item_type' => 'song'
-		]
-	];
+	// collect review item names to search
+	$searchTerms = [];
+    foreach ($userReviews as $review) {
+        // use only highly rated items (4+ stars) as basis for recommendations
+        if($review['rating'] >= 4) {
+            $searchTerms[] = $review['item_id'];
+        }
+    }
+    // if there are no highly rated reviews, use all of them
+    if (empty($searchTerms)) {
+        $userReviews = $reviews->find(['username' => $username]);
+        foreach ($userReviews as $review) {
+            $searchTerms[] = $review['item_id'];
+        }
+    }
+    // if still no reviews at all just return empty
+    if (empty($searchTerms)) {
+        return [
+            "status" => "success",
+            "recommendations" => [],
+            "message" => "No reviews found. Leave some to get recommendations!"
+        ];
+    }
 
-	// tally genre scores based on user ratings
-	$genreScores = [];
-	$reviewedItems = [];
+    // send search requests to the DMZ for each reviewed item
+    $dmzClient = new rabbitMQClient("testRabbitMQ.ini", "testDMZ");
+    $allResults = [];
 
-	foreach ($userReviews as $review) {
-		$itemId = $review['item_id'];
-		$rating = $review['rating'];
-		$reviewedItems[] = $itemId;
+    foreach ($searchTerms as $term) {
+        $dmzRequest = [
+            'type' => 'searchRequest',
+            'userInput' => $term,
+            'userFilters' => 'artists'
+        ];
+        $dmzResponse = $dmzClient->send_request($dmzRequest);
 
-		// TODO: replace mock data with real Tidal API response from DMZ
-		$metadata = $GenreData[$itemId] ?? $GenreData['default'];
-		$genres = $metadata['genres'];
-
-		foreach ($genres as $genre) {
-			if (!isset($genreScores[$genre])) {
-				$genreScores[$genre] = 0;
-			}
-			$genreScores[$genre] += $rating;
-		}
-	}
-
-	// sort genres by score, highest first
-	arsort($genreScores);
-	$topGenres = array_slice(array_keys($genreScores), 0, 3);
-
-	// mock recommendations by genre
-	// TODO: replace with real Tidal API calls from DMZ
-	$recommendations = [
-		'Rock' => [
-			['title' => 'Bohemian Rhapsody', 'artist' => 'Queen', 'genres' => ['Rock', 'Classic Rock'], 'item_type' => 'song', 'reason' => 'Based on your Rock reviews'],
-			['title' => 'Back in Black', 'artist' => 'AC/DC', 'genres' => ['Rock', 'Hard Rock'], 'item_type' => 'song', 'reason' => 'Popular in Rock']
-		],
-		'Pop' => [
-			['title' => 'Blinding Lights', 'artist' => 'The Weeknd', 'genres' => ['Pop', 'Synth-pop'], 'item_type' => 'song', 'reason' => 'Based on your Pop reviews'],
-			['title' => 'Anti-Hero', 'artist' => 'Taylor Swift', 'genres' => ['Pop'], 'item_type' => 'song', 'reason' => 'Popular in Pop']
-		],
-		'Alternative' => [
-			['title' => 'Smells Like Teen Spirit', 'artist' => 'Nirvana', 'genres' => ['Alternative', 'Grunge'], 'item_type' => 'song', 'reason' => 'Based on your Alternative reviews'],
-		],
-		'Hip-Hop' => [
-			['title' => 'HUMBLE.', 'artist' => 'Kendrick Lamar', 'genres' => ['Hip-Hop', 'Rap'], 'item_type' => 'song', 'reason' => 'Based on your Hip-Hop reviews'],
-		],
-	];
-
-	// build recommendations from list from top genres
-	$buildRecommendations =[];
-	foreach($topGenres as $genre) {
-		if (isset($recommendations[$genre])) {
-			foreach ($recommendations[$genre] as $rec) {
-				$buildRecommendations[] = $rec;
-			}
-		}
-	}
-
-	// if no reviews have been made yet, return generic popular recommendations
-	if (empty($buildRecommendations)) {
-		$buildRecommendations = [
-			['title' => 'Blinding Lights', 'artist' => 'The Weeknd', 'genres' => ['Pop', 'Synth-pop'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
-			['title' => 'Bohemian Rhapsody', 'artist' => 'Queen', 'genres' => ['Rock', 'Classic Rock'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
-			['title' => 'HUMBLE.', 'artist' => 'Kendrick Lamar', 'genres' => ['Hip-Hop'], 'item_type' => 'song', 'reason' => 'Popular on Survivalists'],
-		];
-	}
-	
-	return [
-		"status" => "success",
-		"recommendations" => $buildRecommendations,
-		"top_genres" => $topGenres
-	];
+        if (isset($dmzResponse['results']) && is_array($dmzResponse['results'])) {
+            foreach ($dmzResponse['results'] as $result) {
+                // avoid duplicates by using Tidal id as key
+                if (isset($result['id']) && !isset($allResults[$result['id']])) {
+                    $allResults[$result['id']] = [
+                        'id' => $result['id'],
+                        'name' => $result['attributes']['name'] ?? 'Unknown',
+                        'type' => $result['type'] ?? 'artists',
+                        'popularity' => $result['attributes']['popularity'] ?? 0,
+                        'tidalUrl' => $result['attributes']['externalLinks'][0]['href'] ?? '',
+                        'reason' => 'Based on your reviews'
+                    ];
+                }
+            }
+        }
+    }
+    // sort by popularity, highest first
+    usort($allResults, function($a, $b) {
+        return $b['popularity'] <=> $a['popularity'];
+    });
+    // return top 10 recommendations
+    $recommendations = array_slice(array_values($allResults), 0, 10);
+    return [
+        "status" => "success",
+        "recommendations" => $recommendations
+    ];
 }
+
 function request_processor($req){
 	//echo "Received Request".PHP_EOL;
 	//echo "<pre>" . var_dump($req) . "</pre>";
