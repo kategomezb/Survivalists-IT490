@@ -49,7 +49,9 @@ function userSearch($userInput) {
     $query = urlencode($userInput);
 
     // url template example: https://openapi.tidal.com/v2/searchResults/abba?explicitFilter=INCLUDE&countryCode=US&include=artists&include=albums&include=tracks
-    $url = "https://openapi.tidal.com/v2/searchResults/$query?explicitFilter=INCLUDE&countryCode=US&include=artists&include=albums&include=tracks";
+   // $url = "https://openapi.tidal.com/v2/searchResults/$query?explicitFilter=INCLUDE&countryCode=US&include=artists&include=albums&include=tracks";
+    $url = "https://openapi.tidal.com/v2/searchResults/$query?explicitFilter=INCLUDE&countryCode=US&include=artists,albums,tracks";
+
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_URL, $url);
