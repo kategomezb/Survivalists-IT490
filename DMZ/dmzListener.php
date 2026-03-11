@@ -40,36 +40,45 @@ function searchRequest($userInput, $userFilters = null) {
 	$result = $apiResult;
     }
 
+    /*
+    if ($userFilters && isset($result['data']['relationships'][$userFilters]['data'])) {
+	$dataFiltered = $result['data']['relationships'][$userFilters]['data'];
+	$finalResults = [];
+
+    "what was breaking this before was that the isset only checks if 'data', 'relationships','data' keys in the json exist
+    but it doesnt check for if they are actually populated or not so it breaks the code as it goes when we
+    get those outlier cases" 
+
+*/
 
     if ($userFilters) {
-        // lowercase incasee api is case sensitive
+        // lowercase incasee api is case sensitive extra precaution wouldnt hurt :) 
         $userFiltersLower = strtolower($userFilters);
         $finalResults = array();
 
-        // 1) Try relationship-based filtering (exact IDs from search relationships)
-        if (isset($result['data']['relationships'][$userFiltersLower]['data']) && is_array($result['data']['relationships'][$userFiltersLower]['data'])) {
+        if (isset($result['data']['relationships'][$userFiltersLower]['data'])) { //checks if these keys exist in the json 
             $dataFiltered = $result['data']['relationships'][$userFiltersLower]['data'];
-            foreach ($dataFiltered as $data) {
-                if (!isset($data['id'])) {
+            foreach ($dataFiltered as $data) { 
+                if (!isset($data['id'])) { //if the item doesn't have an id this block will skip it 
                     continue; 
                 }
 
-                if (isset($result['included']) && is_array($result['included'])) {
-                    foreach ($result['included'] as $includedItem) {
-                        // match each included item by ID
-                        if (isset($includedItem['id']) && $includedItem['id'] == $data['id'];) {
-                            $finalResults[] = $includedItem;
+                if (isset($result['included'])) { //skip items that dont have an included section 
+                    foreach ($result['included'] as $includedData) {
+                        // chekc that included data has an id then makes sure it matches the data id
+                        if (isset($includedData['id']) && $includedData['id'] == $data['id']) {
+                            $finalResults[] = $includedData;
                         }
                     }
                 }
             }
         }
 
-        // 2) Fallback: if relationships list is empty, use type-based included filtering
-        if (count($finalResults) === 0 && isset($result['included']) && is_array($result['included'])) {
-            foreach ($result['included'] as $includedItem) {
-                if (isset($includedItem['type']) && $includedItem['type'] == $userFiltersLower) {
-                    $finalResults[] = $includedItem;
+        // if relationships list is empty ,or filter type is missing , relationship array is empty scan included list to make sure we dont miss anything 
+        if (count($finalResults) === 0 && isset($result['included'])) {
+            foreach ($result['included'] as $includedData) {
+                if (isset($includedData['type']) && $includedData['type'] == $userFiltersLower) {
+                    $finalResults[] = $includedData;
                 }
             }
         }
