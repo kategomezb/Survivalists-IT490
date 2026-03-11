@@ -39,15 +39,22 @@ if (isset($_COOKIE['Recommendations'])) {
             <div class="recommendations-grid">
                 <?php foreach ($recommendations as $item): ?>
                 <div class="rec-card">
-                    <div class="rec-type"><?php echo htmlspecialchars($item['item_type']); ?></div>
-                    <div class="rec-title"><?php echo htmlspecialchars($item['title']); ?></div>
-                    <div class="rec-artist"><?php echo htmlspecialchars($item['artist']); ?></div>
-                    <div class="rec-genres">
+                    <div class="rec-type"><?php echo htmlspecialchars($item['type'] ?? 'artist'); ?></div>
+                    <div class="rec-title"><?php echo htmlspecialchars($item['name'] ?? 'unknown'); ?></div>
+                    <div class="rec-popularity">Popularity: <?php echo round(($item['popularity'] ?? 0) * 100); ?>%</div>
+                        <?php if (!empty($item['tidalUrl'])): ?>
+                        <a href="<?php echo htmlspecialchars($item['tidalUrl']); ?>" 
+                        target="_blank" class="tidal-link">Listen on Tidal &rarr;</a>
+                        <?php endif; ?>
+                    <!--
+                        <div class="rec-genres">
                         <?php foreach ($item['genres'] as $genre): ?>
                             <span class="genre-tag"><?php echo htmlspecialchars($genre); ?></span>
-                        <?php endforeach; ?>
+                        <?php endforeach;?>
                     </div>
-                    <div class="rec-reason"><?php echo htmlspecialchars($item['reason']); ?></div>
+                        -->
+        
+                    <div class="rec-reason"><?php echo htmlspecialchars($item['reason'] ?? ''); ?></div>
                 </div>
                 <?php endforeach; ?>
             </div>
