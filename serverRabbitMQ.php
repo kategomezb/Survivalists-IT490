@@ -13,7 +13,7 @@ require '../vendor/autoload.php';
 //}
 
 	//server to MongoDB connection
-	$uri = 'mongodb://100.105.160.23:27017/';
+	$uri = 'mongodb://100.105.160.23:27017/'; // for local testing: 127.0.0.1
 	$client = new MongoDB\Client($uri);
 	$db = $client->survivalists_db;
 
