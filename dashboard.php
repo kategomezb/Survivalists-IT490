@@ -25,6 +25,17 @@
         <div class="content">
             <p>This is our dashboard. I made the box extra big so there's actually room for the stuff we're supposed to add. 
                Remember that we can change everything if you don't like it.</p>
+
+                <form class="searchBar" method="POST" action="">
+                    <input type="text" name="userInput" class="searchInput" placeholder="Search for songs, albums..." required>
+                    <button type="submit" class="searchButton">Find</button>
+                    <div class="checkBoxes">
+                        <span>Filter by: </span>
+                        <label><input type="checkbox" name="userFilters[]" value="artists" checked> Artists</label>
+                        <label><input type="checkbox" name="userFilters[]" value="albums"> Albums</label>
+                        <label><input type="checkbox" name="userFilters[]" value="tracks"> Tracks</label>
+                </div>
+            </form>
                <a href="review.html" class="reviewLink">Leave a Review &rarr;</a>
                <a href="recommendationsRequest.php" class="actionLink">Get Recommendations &rarr;</a>
         </div>
