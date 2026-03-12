@@ -61,7 +61,7 @@ function requestProcessor($request) {
     return array("returnCode" => '0', "message" => "Server received request and processed");
 }
 
-$dmzServer = new rabbitMQServer("testRabbitMQ.ini", "testDMZ");
+$dmzServer = new rabbitMQServer("/../testRabbitMQ.ini", "testDMZ");
 
 echo "dmzRabbitMQServer BEGIN".PHP_EOL;
 $dmzServer->process_requests('requestProcessor');

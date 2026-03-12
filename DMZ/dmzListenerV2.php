@@ -3,7 +3,7 @@
 require_once('../includes/path.inc');
 require_once('../includes/get_host_info.inc');
 require_once('../includes/rabbitMQLib.inc');
-require '../../includes/vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 
 $uri = 'mongodb://100.105.160.23:27017/';
@@ -285,7 +285,7 @@ function requestProcessor($request)
     return "Unknown request";
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testDMZ");
+$server = new rabbitMQServer(__DIR__ . "/../testRabbitMQ.ini","testDMZ");
 echo "RabbitMQ Server Started".PHP_EOL;
 $server->process_requests('requestProcessor');
 exit();
