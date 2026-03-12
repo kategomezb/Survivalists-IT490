@@ -1,32 +1,35 @@
 <?php
-require_once('path.inc');
-require_once('get_host_info.inc');
-require_once('rabbitMQLib.inc');
+require_once('includes/path.inc');
+require_once('includes/get_host_info.inc');
+require_once('includes/rabbitMQLib.inc');
 
-$client = new rabbitMQClient('testRabbitMQ.ini', 'testServer');
+$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
 
-$loginRequest = [
-	'type' => 'login',
-	'username' => $_POST['username'],
-	'password' => $_POST['password']
+// This is the original
+$request = [
+    'type' => 'login',
+    'username' => $_POST['username'],
+    'password' => $_POST['password']
 ];
 
-$response = $client->send_request($loginRequest);
 
-$expiration = time() + 3600;
+$response = $client->send_request($request);
 
-// COOKIES + SESSIONS REFERENCES:
-// 1. https://www.geeksforgeeks.org/computer-networks/session-vs-token-based-authentication/ 
-// 2. https://www.php.net/manual/en/function.setcookie.php
+// This will show us if it is generating the session key.
+// <pre> </pre> — for testing the session keys
+// I used this link as a reference: https://stackoverflow.com/questions/4756842/what-does-php-echo-pre-echo-pre-mean
+//echo "<pre>";
+//print_r($response);
+//echo "</pre>";
 
-if($response['returnCode'] == '0') {
-	setcookie("SessionKey", $response['session_key'], $expiration);
-	header('Location: dashboard.php');
-	//echo 'Login success!';
-	exit();
-} else {
-	header('Location: login.html');
-} 
 
-//echo "Server response: " . $response['message'];
+if (isset($response['status']) && $response['status'] === 'success') {
+    setcookie('SessionKey', $response['session_key'], 0, '/');
+    header("Location: dashboard.php");
+    exit();
+}
+
+// if the login fails i need to display this
+echo $response['message'] ?? 'Login failed'; 
+//echo "Server response: " . $response['message']; // this is what the teacher had before.
 ?>

@@ -1,0 +1,109 @@
+/* I picked this font but we can change it later on. Link that i accessed:
+        https://fonts.google.com/specimen/Playfair+Display
+        */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+/* I did this design because I thought it would look good, but we can change colors and font. I got the background colors from here:
+        https://designshack.net/articles/trends/best-website-color-schemes/
+        */
+body {
+    background-color: #FDF5DF;
+    font-family: 'Playfair Display', serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* I put the text to the left because i added 4 pictures that i want to position on the right.*/
+.page {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    gap: 80px;
+    max-width: 1200px;
+    padding: 40px;
+    align-items: center;
+    text-align: left;
+}
+
+h1 {
+    font-size: 90px;
+    line-height: 1.1;
+    font-weight: 700;
+    color: #5EBEC4;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 22px;
+    color: #1b1b1b;
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+.configButtons {
+    display: flex;
+    gap: 15px;
+}
+
+button {
+    padding: 16px 40px;
+    border-radius: 50px;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.loginButton {
+    background: #5EBEC4;
+    color: white;
+}
+
+.registerButton {
+    background: white;
+    color: #1b1b1b;
+}
+
+/* I got this effect from this website: 
+        https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/transform-function/translateY 
+        */
+button:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Here Im gonna add everything that goes on the right side */
+.images {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 20px;
+}
+
+/* This are the quares for the pictures, and the box-shadow effect i got it from here: 
+        https://www.w3schools.com/css//css3_shadows_box.asp
+        */
+.shapeSquare {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 3px 3px 10px #1b1b1b;
+}
+
+.shapeSquare img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+/* I wanted to have something interactive with the home page, but I didnt wanted to complicated myself, 
+        so I looked on youtube an easy effect that I could do for the images. I got this effect from here: 
+        https://www.youtube.com/shorts/oQQUfkvPvUw
+        */
+.shapeSquare:hover img {
+    transform: scale(1.3);
+}
