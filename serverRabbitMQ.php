@@ -1,9 +1,9 @@
 #!/usr/bin/php
 <?php
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
-require_once('../path.inc');
-require_once('../get_host_info.inc');
-require_once('../rabbitMQLib.inc');
+require_once('includes/path.inc');
+require_once('includes/get_host_info.inc');
+require_once('includes/rabbitMQLib.inc');
 require '../vendor/autoload.php';
 
 // teacher had this on the orginal code
