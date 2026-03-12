@@ -6,7 +6,7 @@ require_once('../includes/rabbitMQLib.inc');
 require __DIR__ . '/../../vendor/autoload.php';
 
 
-$uri = 'mongodb://100.105.160.23:27017/';
+$uri = 'mongodb://100.105.160.23:27017/'; // use this for local testing: 127.0.0.1
 $mongoClient = new MongoDB\Client($uri);
 $database = $mongoClient->survivalists_db;
 $tidalCollection = $database->tidal_db;
