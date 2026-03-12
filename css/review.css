@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+body {
+  background-color: #FDF5DF;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.card {
+  background: white;
+  display: flex;
+  padding: 50px;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px #5EBEC4;
+  align-items: center;
+  gap: 60px;
+}
+
+.image {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 5;
+  border: 4px solid white;
+}
+
+.profile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.outerGlow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #F92C85;
+  border-radius: 50%;
+  animation: ring-pulse 3.5s linear infinite;
+}
+
+@keyframes ring-pulse {
+  0% { transform: scale(0.7); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form h2 {
+  font-weight: normal;
+  margin-bottom: 25px;
+  font-size: 26px;
+}
+
+.input {
+  margin-bottom: 18px;
+}
+
+.labels {
+  display: block;
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 5px;
+}
+
+.field-style {
+  width: 240px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #fcfcfc;
+  font-size: 12px;
+  font-family: 'Playfair Display', serif;
+}
+
+.textarea-style {
+  height: 100px;
+  resize: vertical;
+}
+
+/* Star rating - displayed right to left so clicking works correctly */
+.stars {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 4px;
+  width: 240px;
+}
+
+.stars input {
+  display: none;
+}
+
+.stars label {
+  font-size: 28px;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Highlight selected star and all stars before it */
+.stars input:checked ~ label,
+.stars label:hover,
+.stars label:hover ~ label {
+  color: #F92C85;
+}
+
+.reviewButton {
+  width: 100%;
+  padding: 12px;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.2s;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+}
+
+.reviewButton:hover {
+  background: #F92C85;
+}
+
+.back {
+  text-decoration: none;
+  font-size: 14px;
+  color: #1a1a1a;
+  text-align: center;
+  margin-top: 25px;
+}
+
+.back:hover {
+  color: #F92C85;
+}

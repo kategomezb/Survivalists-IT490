@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Survivalists - Leave a Review</title>
+    <link rel="stylesheet" href="css/review.css">
+</head>
+
+<body>
+    <div class="card">
+        <div class="image">
+            <div class="outerGlow"></div>
+            <div class="outerGlow" style="animation-delay:1.5s;"></div>
+            <div class="profile">
+                <img src="images/loginImage.jpg" alt="Review">
+            </div>
+        </div>
+        <div class="form">
+            <h2>Review on <strong> Survivalists</strong></h2>
+            <form method="post" action="reviewRequest.php">
+                <!-- Hidden fields that are filled dynamically when linking from a
+                     song/album/artist page-->
+
+                <div class="input">
+                    <span class="labels">What are you reviewing?</span>
+                    <select name="item_type" class="field-style" required>
+                        <option value="" disabled selected>Select type</option>
+                        <option value="song">Song</option>
+                        <option value="album">Album</option>
+                        <option value="artist">Artist</option>
+                    </select>
+                </div>
+
+                <div class="input">
+                    <span class="labels">Tidal ID</span>
+                    <input type="text" name="item_id" class="field-style" placeholder="e.g. 123456789" required>
+                </div>
+
+                <div class="input">
+                    <span class="labels">Rating (1-5)</span>
+                    <div class="stars">
+                        <input type="radio" name="rating" id="star5" value="5" required>
+                        <label for="star5">&#9733;</label>
+
+                        <input type="radio" name="rating" id="star4" value="4">
+                        <label for="star4">&#9733;</label>
+
+                        <input type="radio" name="rating" id="star3" value="3">
+                        <label for="star3">&#9733;</label>
+
+                        <input type="radio" name="rating" id="star2" value="2">
+                        <label for="star2">&#9733;</label>
+
+                        <input type="radio" name="rating" id="star1" value="1">
+                        <label for="star1">&#9733;</label>
+                    </div>
+                </div>
+
+                <div class="input">
+                    <span class="labels">Your Review</span>
+                    <textarea name="review_text" class="field-style textarea-style" 
+                    placeholder="Write your thoughts here..."></textarea>
+                </div>
+
+                <input type="submit" value="Submit Review" class="reviewButton">
+            </form>
+            <a href="dashboard.php" class="back">&larr;Back to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
