@@ -661,28 +661,34 @@ nav {
     font-size: 10px;
 }
 
-.photo-box {
+.user-creation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* .photo-box {
     display: grid;
     grid-template-columns: repeat(3, auto);
     grid-gap: 10px;
     margin-top: 15px;
-}
+} */
 
-.photo-box div img {
+/* .photo-box div img {
     width: 100%;
     cursor: pointer;
-}
+} */
 
 .profile-intro p {
     font-size: 14px;
 }
 
-.friends-box {
+/* .friends-box {
     display: grid;
     grid-template-columns: repeat(3, auto);
     grid-gap: 10px;
     margin-top: 15px;
-}
+} */
 
 .friends-box div img {
     width: 100%;

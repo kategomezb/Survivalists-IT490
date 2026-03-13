@@ -184,7 +184,7 @@
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Tracks</h3>
-                        <a href="#">View Tracks</a>
+                        <a href="addFavoriteTrack.php">Add a track</a>
                     </div>
                     <!-- <p>RETRIEVE TRACKS FROM USER_LIBRARY DATABASE</p> -->
                     <?php
@@ -192,14 +192,19 @@
 
                         // will use foreach loop to retrieve each username of the items in the logged in User's follower array
                         $favoriteTracks = $user['library']['favoriteTracks'];
+                        // $favTrackTitle = json_encode($favoriteTracks['title']);
+                        // $favTrackArtist = json_encode($favoriteTracks['artist']);
 
                             foreach($favoriteTracks as $document) {
                             // echo "<i class='fa-solid fa-user'>";
                             // echo "</i>";
 
-                                echo "<span>";
-                                echo json_encode($document);
-                                echo "</span>";
+                                echo "<div class='user-curation'>";
+
+                                $favTrackTitle = json_encode($document['title']);
+                                $favTrackArtist = json_encode($document['artist']);
+                                echo "$favTrackTitle by $favTrackArtist";
+                                echo "</div>";
                             };
 
                         echo "</div>";
@@ -208,7 +213,7 @@
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Artists</h3>
-                        <a href="#">View Artists</a>
+                        <a href="addFavoriteArtist.php">Add an artist</a>
                     </div>
                     <p>RETRIEVE ARTISTS FROM USER_LIBRARY DATABASE</p>
                     <div class="friends-box">
@@ -218,7 +223,7 @@
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Albums</h3>
-                        <a href="#">View Albums</a>   
+                        <a href="addFavoriteAlbum.php">Add an album</a>   
                     </div>
                     <p>RETRIEVE ALBUMS FROM USER_LIBRARY DATABASE</p>
                     <div class="friends-box">
