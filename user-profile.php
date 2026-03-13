@@ -175,7 +175,7 @@
                                 echo "<div class='user-curation'>";
                                     echo "<i class='fa-solid fa-user'>";
                                         echo "&nbsp";
-                                        echo htmlspecialchars($document);
+                                        echo ($document);
                                     echo "</i>";
                                 echo "</div>";
                             };
@@ -284,7 +284,16 @@
                         <!-- should be some sort of search text box that drops down and populates with related seach results -->
                         <div class="post-search-box">
                             <img src="../images/search.png" alt="search icon">
-                            <input type="text" placeholder="What are you listening to, $USERNAME?">
+                            <?php
+
+                            $username = $user['username'];
+
+                            echo "<input type='text'";
+                            echo "placeholder='What are you listening to, ";
+                            echo $username;
+                            echo "?'>";
+
+                            ?>
                         </div>
                         <textarea rows="3" placeholder="Say something..."></textarea>
                 <button type="button" id="submit-btn">Submit</button>
@@ -296,32 +305,55 @@
                     </div>
                 </div>
 
-                <div class="post-container">
-                    <div class="post-row">
-                        <div class="user-profile">
-                            <i class="fa-solid fa-circle-user"></i>
-                            <!-- will modify to user icons instead of images -->
-                            <div>
-                                <p>RETRIEVE USERNAME FROM POST DATABASE</p>
-                                <span>RETRIEVE DATE OBJECT FROM POST DATABASE</span>
-                            </div>
-                        </div>
-                        <a href="#"><i class="fas fa-ellipsis-v"></i></a>
-                    </div>
-                    <p class="post-text">RETRIEVE USERNAME FROM POST DATABASE</p>
-                    <div class="post-row">
-                        <div class="activity-icons">
-                            <div><img src="../images/like.png" alt="like"> RETRIEVE COUNTER OBJECT FROM POST DATABASE
-                            </div>
-                            <div><img src="../images/comments.png" alt="comments"> RETRIEVE COUNTER OBJECT FROM POST
-                                DATABASE</div>
-                            <div><img src="../images/share.png" alt="shares"> RETRIEVE COUNTER OBJECT FROM POST DATABASE
-                            </div>
+                <?php
+                    $userPosts = $user['posts'];
+                    foreach($userPosts as $document) {
+                    echo "<div class='post-container'>";
+                        echo "<div class='post-row'>";
+                            echo "<div class='user-profile'>";
+                                echo "<i class='fa-solid fa-circle-user'>";
+                                echo "</i>";
+                                // <!-- will modify to user icons instead of images -->
+                                echo "<div>";
+                                    // <!-- <p>RETRIEVE USERNAME FROM POST DATABASE</p> -->
+                                    
+                                    echo "<p>";
+                                    
+                                    // RETRIEVE USERNAME BY LOOKING UP STORED SESSION KEY
+                                    $username = $user['username'];
+                                    echo $username;
+                                    
+                                    echo "</p>";               
+                                                
+                                    // RETRIEVE DATE OBJECT FROM LOGGED IN USER'S POSTS ARRAY BY ITERATING W/ FOREACH LOOP
+                                    $userPost = json_encode($user['posts']);
+                                    $media = json_encode($user['posts']['media']);
+                                    $content = json_encode($user['posts']['content']);                             
+                                    $postedAt = json_encode($user['posts']['postedAt']);
 
-                        </div>
-                    </div>
-                </div>
 
+                                echo "</div>";
+                            echo "</div>";
+                            echo "<a href='#'>";
+                            echo "<i class='fas fa-ellipsis-v'></i></a>";
+                        echo "</div>";
+
+                        // <!-- <p class="post-text">RETRIEVE USERNAME FROM POST DATABASE</p> -->
+                        
+                        // <div class="post-row">
+                        //     <div class="activity-icons">
+                        //         <div><img src="../images/like.png" alt="like"> RETRIEVE COUNTER OBJECT FROM POST DATABASE
+                        //         </div>
+                        //         <div><img src="../images/comments.png" alt="comments"> RETRIEVE COUNTER OBJECT FROM POST
+                        //             DATABASE</div>
+                        //         <div><img src="../images/share.png" alt="shares"> RETRIEVE COUNTER OBJECT FROM POST DATABASE
+                        //         </div>
+
+                        //     </div>
+                        // </div>
+                        echo "</div>";
+                    };
+                ?>
             </div>
         </div>
     </div>

@@ -11,14 +11,15 @@ if (!isset($_POST['username']) || !isset($_POST['password'])) {
 $client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
 
 //this will show up on the queue
-$createPost = array(
+$createPostRequest = array(
     'type' => 'createPost',
 	'session_key' => $_COOKIE['SessionKey'], // FIXED: null username field issue by accessing the stored SessionKey in cookie
+    'media' => $media,
     'content' => $content,
     'postedAt' => $postedAt
 );
 
-$serverResponse = $client->send_request($registration);
+$serverResponse = $client->send_request($createPostRequest); // FIXED: createPost function was redirecting to registration instead of createPostRequest
 
 //this is to see if it works
 echo "<pre>";

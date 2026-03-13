@@ -112,7 +112,7 @@ function createPost($session_key, $content, $postedAt) {
 
 
 	// logic from login method: $query = array('username' => $username); // 'password' => $password);
-	                         // $user = $userCollection->findOne($query);
+	//                          $user = $userCollection->findOne($query);
 
     $userCollection = $database->reg_users; // need to update the posts array in the user object
 
@@ -124,19 +124,22 @@ function createPost($session_key, $content, $postedAt) {
 
     $username = $user['username'];
 
-    // populated post into compiled post collection (will use for feed)
-    $post = $postCollection->insertOne(array(
+    // post Object instantiated
+    $post = [
         "username" => $username,
         "media" => $media,
         "content" => $content,
-        "postedAt" => $postedAt
-    ));
+        "postedAt" => time()
+    ];
 
-    // adds created post into the unique poster's post array
+    // post Object populated into postCollection (will be used for the master feed)
+    $postCollection->insertOne($post);
+
+    // adds created post into the unique poster's post array (used for user-profile)
     $userCollection->updateOne(
 			["username" => $username],
         		['$push' => [
-				"posts" => $post->getInsertedId() // NOTE: keySession is database's session key variable,  session_key is server's variable
+				"posts" => $post
 			]]
 		);
 
@@ -295,69 +298,71 @@ function addFavoriteAlbum($session_key, $album, $artist) {
 
 // iterate through the signed in user's following array
 // retrieve and add all of those posts to a temporary array 
-function getFeed() {
-    global $database;
+// function getFeed() {
+//     global $database;
 
-    $userCollection = $database->reg_users;
+//     $userCollection = $database->reg_users;
 
-    // access stored session key
-    // find corresponding User object in reg_users database w/ that session key
-    // access that User object and store its username
+//     // access stored session key
+//     // find corresponding User object in reg_users database w/ that session key
+//     // access that User object and store its username
 
-    $query = array('keySession' => $session_key);
-    print_r(array('query' => $query)); // stack tracing for NULL error
+//     $query = array('keySession' => $session_key);
+//     print_r(array('query' => $query)); // stack tracing for NULL error
 
-	$user = $userCollection->findOne($query);
-    print_r(array('user' => $user)); // stack tracing for NULL error
+// 	$user = $userCollection->findOne($query);
+//     print_r(array('user' => $user)); // stack tracing for NULL error
 
-    // stack tracing for NULL error
-    if(!$user) {
-        print_r(array('message' => "session_key cannot be traced back to user"));
-    } else {
-        print_r(array('message' => "user's session key authenticated"));
-    }
+//     // stack tracing for NULL error
+//     if(!$user) {
+//         print_r(array('message' => "session_key cannot be traced back to user"));
+//     } else {
+//         print_r(array('message' => "user's session key authenticated"));
+//     }
 
-    $username = $user['username'];
-    print_r(array('username' => $username)); // stack tracing for NULL error
+//     $username = $user['username'];
+//     print_r(array('username' => $username)); // stack tracing for NULL error
 
 
-}
+// }
 
-// iterate through the posts array of the signed in user
-// retrieve and have a for loop that creates a post-container for each post element in array
-function getUserFeed() {
-    global $database;
+// // iterate through the posts array of the signed in user
+// // retrieve and have a for loop that creates a post-container for each post element in array
+// function getUserFeed() {
+//     global $database;
 
-    $userCollection = $database->reg_users;
+//     $userCollection = $database->reg_users;
 
-    // access stored session key
-    // find corresponding User object in reg_users database w/ that session key
-    // access that User object and store its username
+//     // access stored session key
+//     // find corresponding User object in reg_users database w/ that session key
+//     // access that User object and store its username
 
-    $query = array('keySession' => $session_key);
-    print_r(array('query' => $query)); // stack tracing for NULL error
+//     $query = array('keySession' => $session_key);
+//     print_r(array('query' => $query)); // stack tracing for NULL error
 
-	$user = $userCollection->findOne($query);
-    print_r(array('user' => $user)); // stack tracing for NULL error
+// 	$user = $userCollection->findOne($query);
+//     print_r(array('user' => $user)); // stack tracing for NULL error
 
-    // stack tracing for NULL error
-    if(!$user) {
-        print_r(array('message' => "session_key cannot be traced back to user"));
-    } else {
-        print_r(array('message' => "user's session key authenticated"));
-    }
+//     // stack tracing for NULL error
+//     if(!$user) {
+//         print_r(array('message' => "session_key cannot be traced back to user"));
+//     } else {
+//         print_r(array('message' => "user's session key authenticated"));
+//     }
 
-    $username = $user['username'];
-    print_r(array('username' => $username)); // stack tracing for NULL error
+//     $username = $user['username'];
+//     print_r(array('username' => $username)); // stack tracing for NULL error
 
     
-}
+// }
 
 function requestProcessor($request) {
     if (!isset($request['type'])) {
         return array("returnCode" => '1', "message" => "This is an invalid request type.");
 
     }
+
+    // FIXED: null username field updated $request[username] to session_key 
 
     switch ($request['type']) {
         case "registration":
@@ -370,7 +375,7 @@ function requestProcessor($request) {
             return createPost($request['session_key'],$request['media'], $request['content'], $request['postedAt']);
 
         // will search track library and populate selected track to user_library
-        // FIXED: null username field updated $request[username] to session_key 
+        case "addMedia";
 
         case "addFavoriteTrack": 
             return addFavoriteTrack($request['session_key'],$request['title'], $request['artist']);

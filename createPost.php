@@ -1,16 +1,11 @@
 <?php
+    require 'vendor/autoload.php'; 
+
     // session authentication
 	if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksforgeeks.org/php/php-cookies/
 		header('Location: login.html');
 		exit();
 	}
-      // pull all User documents from the reg_user db
-    $uri = 'mongodb://100.105.160.23:27017/';
-    $mongoClient = new MongoDB\Client($uri);
-    $database = $mongoClient->survivalists_db;
-
-    $userCollection = $database->reg_users;
-    $user = $userCollection->findOne(['keySession' => $_COOKIE['SessionKey']]); // fi
 ?>
 
 <!DOCTYPE html>
@@ -169,14 +164,23 @@
         <div class="form">
             <h2>Make a post</strong></h2>
             
+            <!-- just some test code to see if created posts are pushed to User's posts array and in postCollection -->
             <form method="post" action="createPostRequest.php">
                 <div class="write-post-container">
                     <div class="user-profile">
                         <div>
-                            <?php 
-                            $username = $user['username']; 
-                            echo "<h3>$username</h3>";
-                            ?>                        
+                          <div class="input">
+                    <span class="labels">Media</span>
+                    <input type="text" name="media" class="field-style" placeholder="For now: Please type the song." required>
+                </div>
+
+                <div class="input">
+                    <span class="labels">Content</span>
+                    <input type="text" name="content" class="field-style" placeholder="Please type the content." required>
+                </div>
+
+                <input type="submit" value="Submit" class="loginButton">
+                                                <a href="dashboard.php" class="href">Back to dashboard</a>         
                         </div>
                     </div>
 
