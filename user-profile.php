@@ -12,6 +12,7 @@
         $userCollection = $database->reg_users;
         
         $user = $userCollection->findOne(['keySession' => $_COOKIE['SessionKey']]);
+
     }
 ?>
 
@@ -51,7 +52,7 @@
                 <input type="text" placeholder="Search">
             </div>
             <div class="nav-user-icon online">
-                <img src="../images/profile-pic.png" alt="profile-pic">
+                <i class="fa-solid fa-circle-user"></i>
             </div>
         </div>
 
@@ -109,7 +110,7 @@
         <div class="profile-details">
             <div class="pd-left">
                 <div class="pd-row">
-                    <img src="../images/profile.png" alt="profile-pic" class="pd-image">
+                    <i class="fa-solid fa-circle-user"></i>
                     <div>
                         <?php
                             echo "<h3>";
@@ -117,13 +118,24 @@
                             // RETRIEVE USERNAME BY LOOKING UP STORED SESSION KEY
                             $username = $user['username'];
                             echo $username;
+                            
                             echo "</h3>";
                         ?>
-                        <p>RETRIEVE FRIENDS COUNTER FROM DATABASE</p>
-                        <img src="../images/member-1.png" alt="member img">
-                        <img src="../images/member-2.png" alt="member img">
-                        <img src="../images/member-3.png" alt="member img">
-                        <img src="../images/member-4.png" alt="member img">
+                        <?php
+                            echo "<p>";
+
+                            // <p>RETRIEVE FOLLOWER COUNTER FROM DATABASE</p>
+                            $followerCount = count($user['followers']);
+                            
+                            if($followerCount == null) {
+                                echo "No followers yet.";
+                            } else {
+                                echo "Followed by $followingCount other(s)";
+                            }
+
+                            echo "</p>";
+
+                        ?>
                     </div>
                 </div>
             </div>
@@ -134,29 +146,69 @@
             <div class="info-col">
                 <div class="profile-intro">
                     <div class="title-box">
-                        <h3>Friends</h3>
-                        <a href="#">View Friends</a>
+                        <h3>Following</h3>
+                        <a href="#">View Following</a>
                     </div>
-                    <p>RETRIEVE COUNTER OF FRIENDS FROM DATABASE</p>
-                    <div class="friends-box">
-                        <!-- if statement that adds users to box when user has followers/friends -->
-                        <i class="fa-solid fa-user"><span>RETRIEVE FOLLOWER NAME</span></i>
 
+                    <?php
+                        echo "<p>";
 
-                    </div>
+                        // <p>RETRIEVE COUNTER OF FOLLOWING FROM DATABASE</p>
+                        $followingCount = count($user['following']);
+                        if($followingCount == null) {
+                                echo "Not following anyone yet.";
+                            } else {
+                                echo $followingCount;
+                            }
+                        echo "</p>";
+                    
+                        echo "<div class='friends-box'>";
+
+                            // RETRIEVE USERNAMES OF PEOPLE USER IS FOLLOWING
+                            // will use foreach loop to retrieve each username of the items in the logged in User's follower array
+                            
+                            $following = $user['following'];
+
+                            foreach($following as $document) {
+                            // echo "<i class='fa-solid fa-user'>";
+                            // echo "</i>";
+
+                                echo "<span>";
+                                echo htmlspecialchars($document);
+                                echo "</span>";
+                            };
+
+                        echo "</div>";
+                    ?>
                 </div>
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Tracks</h3>
+                        <a href="#">View Tracks</a>
                     </div>
-                    <p>RETRIEVE TRACKS FROM USER_LIBRARY DATABASE</p>
-                    <div class="friends-box">
-                        <!-- if statement that adds users to box when user has followers/friends -->
-                    </div>
+                    <!-- <p>RETRIEVE TRACKS FROM USER_LIBRARY DATABASE</p> -->
+                    <?php
+                        echo "<div class='friends-box'>";
+
+                        // will use foreach loop to retrieve each username of the items in the logged in User's follower array
+                        $favoriteTracks = $user['library']['favoriteTracks'];
+
+                            foreach($favoriteTracks as $document) {
+                            // echo "<i class='fa-solid fa-user'>";
+                            // echo "</i>";
+
+                                echo "<span>";
+                                echo json_encode($document);
+                                echo "</span>";
+                            };
+
+                        echo "</div>";
+                    ?>
                 </div>
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Artists</h3>
+                        <a href="#">View Artists</a>
                     </div>
                     <p>RETRIEVE ARTISTS FROM USER_LIBRARY DATABASE</p>
                     <div class="friends-box">
@@ -166,6 +218,7 @@
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Favorite Albums</h3>
+                        <a href="#">View Albums</a>   
                     </div>
                     <p>RETRIEVE ALBUMS FROM USER_LIBRARY DATABASE</p>
                     <div class="friends-box">
@@ -176,7 +229,7 @@
             <div class="post-col">
                 <div class="write-post-container">
                     <div class="user-profile">
-                        <img src="../images/profile-pic.png" alt="profile pic">
+                        <i class="fa-solid fa-circle-user"></i>                    
                     </div>
 
                     <div class="post-input-container">
@@ -198,7 +251,7 @@
                 <div class="post-container">
                     <div class="post-row">
                         <div class="user-profile">
-                            <img src="../images/profile-pic.png" alt="profile pic">
+                            <i class="fa-solid fa-circle-user"></i>
                             <!-- will modify to user icons instead of images -->
                             <div>
                                 <p>RETRIEVE USERNAME FROM POST DATABASE</p>
