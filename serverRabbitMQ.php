@@ -105,7 +105,8 @@ function login($username, $password) {
 }
 
 // populates postCollection everytime a user posts something
-function createPost($session_key, $content, $postedAt) {
+// FIXED: missing media parameter
+function createPost($session_key, $media, $content, $postedAt) {
     global $database;
 
     $postCollection = $database->posts_db;

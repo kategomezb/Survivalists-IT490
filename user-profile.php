@@ -321,16 +321,27 @@
                                     
                                     // RETRIEVE USERNAME BY LOOKING UP STORED SESSION KEY
                                     $username = $user['username'];
+                                    $media = json_encode($userPosts['media']);
+                                    $content = json_encode($userPosts['content']);                             
+                                    $postedAt = json_encode($userPosts['postedAt']);
+
                                     echo $username;
                                     
-                                    echo "</p>";               
+                                    echo "</p>";    
+                                    
+                                    echo "<span>";
+
+                                    echo $postedAt;
+
+                                    echo "</span>";
                                                 
                                     // RETRIEVE DATE OBJECT FROM LOGGED IN USER'S POSTS ARRAY BY ITERATING W/ FOREACH LOOP
-                                    $userPost = json_encode($user['posts']);
-                                    $media = json_encode($user['posts']['media']);
-                                    $content = json_encode($user['posts']['content']);                             
-                                    $postedAt = json_encode($user['posts']['postedAt']);
+                                    
 
+                                    echo "<p class='post-text'>";
+                                    echo $media;
+                                    echo $content;
+                                    echo "</p>";
 
                                 echo "</div>";
                             echo "</div>";
