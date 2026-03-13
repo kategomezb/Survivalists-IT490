@@ -166,7 +166,8 @@
 
                             // RETRIEVE USERNAMES OF PEOPLE USER IS FOLLOWING
                             // will use foreach loop to retrieve each username of the items in the logged in User's follower array
-                            
+                            // REF for foreach loop w/ arrays: https://www.php.net/manual/en/control-structures.foreach.php
+							// REF for pulling logged in User object data from Mongo: https://stackoverflow.com/questions/26716035/display-mongodb-collections-using-html-file
                             $following = $user['following'];
 
                             foreach($following as $document) {
