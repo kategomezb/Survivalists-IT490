@@ -242,19 +242,47 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                         $filter = [];
 
                         $options = ['limit' => 5];
-
+                        
+                        // goes through reg_users database and limits five
                         $users = $userCollection->find($filter, $options);
 
+                        // loop through each of the five users
                         foreach ($users as $document) {
                             // echo "<i class='fa-solid fa-user'>";
                             // echo "</i>";
 
                             echo "<div class='user-curation'>";
+
+                            // for the current user in the list of five, retrieve and store their username
                             $recommendUsername = $document['username'];
+
+                            // check to make sure one of the usernames are not the logged in user's
                             if ($recommendUsername != $username) {
                                 echo $recommendUsername;
                                 echo "&nbsp";
-                                echo "<a href='button'>Follow"; // will need to change this to a button that calls followUser() in serverRabbitMQ.php
+                                echo "<a>";
+                                
+                                // follow button
+                                // if clicked update the User's following list to include the current user object it recommended
+                                
+                                if(isset($_POST['btn-follow'])) {
+                                    $user->updateOne(
+                                        ["username" => $username],
+                                            ['$addToSet' => [ // ensures multiple follow-btn clicks won't add the current user multiple times in the logged in user's following 
+                                                "following" => $recommendUsername
+                                                ]
+                                            ]
+                                    );
+                                }
+
+                                echo "<form method='post'>";
+                                echo "<input type='submit' name='btn-follow' value='Follow'>"; // will need to change this to a button that calls followUser() in serverRabbitMQ.php
+                                echo "</form>";
+
+                                // if button is clicked, add the recommendUsername to the signed in User's following array
+                                
+
+                            
                                 echo "</a>";
                             } else {
                             }
@@ -276,7 +304,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 </div> -->
 
                 <!-- integrate kate's search bar here -->
-                <a href="createPost.php">Make a new post</a>
+                <a href="mediaSearch.php"><button>+</button></a>
 
                 <?php
                 $userPosts = $user['posts'];
@@ -294,7 +322,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
 
                     // RETRIEVE USERNAME BY LOOKING UP STORED SESSION KEY
                     $username = $user['username'];
-                    
+
                     // user posts are populated as objects into posts array will need to access them as strings or arrays to get the postDetails
                     // ref (went with the accessing of the MongoDB document's properties): https://www.mongodb.com/community/forums/t/accessing-object-value-from-nested-objects-in-mongodb-with-php/200733
 
