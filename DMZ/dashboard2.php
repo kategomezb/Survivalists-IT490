@@ -24,9 +24,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             /*margin: 0;*/
-            overflow: hidden;
         }
         /* I made the dashboard box bigger (width) so we have space to add more stuff, but we can change this value later on */
         .dashboard {
@@ -110,7 +108,16 @@
             border-radius: 9px;
             font-weight: bold;
         }
-
+        .viewMoreButton {
+           padding: 5px 15px;
+           margin-top: 10px;
+            background-color: #5EBEC4;
+           color: white;
+           border: none;
+           border-radius: 5px;
+           font-weight: bold;
+         }
+        
         .searchButton:hover {
             background-color: #4daeb4; 
         }
@@ -138,6 +145,19 @@
         .logoutButton:hover {
             text-decoration: underline;
         }
+
+        #results{
+	width:100%;
+	font-family:'Plus Jakarta Sans', sans-serif;
+        }
+
+        .resultCard{
+	   background:#FDF5DF;
+	   border-left:5px solid #5EBEC4;
+	   padding:12px;
+	   margin-bottom:10px;
+	   border-radius:6px;
+         }
     </style>
 </head>
 <body>
@@ -165,6 +185,7 @@
                     <label><input type="checkbox" name="userFilters[]" value="tracks"> Tracks</label>
                 </div>
             </form>
+            <div id="results"></div>
         </div>
         <!-- I added the arrow effect on the login, register and dashboard because i saw it in one website and i thought it looked good and modern. I got the link from:
         https://www.w3schools.com/charsets/ref_utf_arrows.asp -->
@@ -245,6 +266,57 @@ document.getElementById("searchForm").addEventListener("submit", function(e){
      // REEF: https://developer.mozilla.org/en-US/docs/Web/API/Response/json
 	.then(res=>res.json())
 	.then(data=>{
-
 		let html="";
+
+               
+		data.forEach((item,index)=>{
+            //since some of the results can be artist or album/track, i added the  ?? so it can display whatever that is there
+           // REF: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
+			let name=item.name ?? item.title;
+                        let link = '';
+                        let popularity = '';
+                        let noOfVolume = '';
+                        let noOfItem = '';
+      
+                         // added link to open in tidal
+                        if (item.type == 'track'){
+                        link = `<a href="https://tidal.com/track/${item.id}" target="_blank">Listen on Tidal</a>`; 
+}
+                       if (item.type == 'artist') {
+                        link = `<a href="https://tidal.com/artist/${item.id}" target="_blank">Open in Tidal</a>`;
+                        popularity = "<b>Popularity:</b> " + item.popularity + "<br>"; 
+}
+                       if (item.type == 'album'){
+                        link = `<a href="https://tidal.com/album/${item.id}" target="_blank">Open in Tidal</a>`;
+                        noOfVolume = "<b>No of Volumes: </b> " + item.no_of_volume + "<br>";
+                        noOfItem = "<b>No of Items: </b>" + item.no_of_item + "<br>";
+}
+          // understandind the literals, helped me to build the card for the results
+          // REF: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+			html += `
+                <div class="resultCard">
+                    <b>${name}</b><br>
+                    ID: ${item.id}<br>
+
+                    <button onclick="toggleDetails(${index})" class="viewMoreButton">View More</button>
+
+                   <!-- this section will display the info that i hid-->
+                    <div id="details-${index}" style="display:none;margin-top:10px;">
+                        ${popularity}
+                        ${noOfVolume}
+                        ${noOfItem}
+                        ${link}
+                    </div>
+                </div>
+            `;
+
+		});
+                 // adding the results to the page
+		document.getElementById("results").innerHTML=html;
+
+	});
+
+});
+
+
 </script>
