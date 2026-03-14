@@ -172,3 +172,28 @@
     </div>
 </body>
 </html>
+
+
+<script>
+
+// here im trying to select all the checkboxes inputs that are on the userFilters.
+// To understand querySelectorAll i refrenced: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+document.querySelectorAll("input[name='userFilters[]']").forEach(cb => {
+
+    // this listener will run everytime a checkbox is changed. 
+    cb.addEventListener("change", function () {
+
+        if (this.checked) {
+	    // for now i just want one filter can be selected.
+            document.querySelectorAll("input[name='userFilters[]']").forEach(other => {
+                if (other !== this) {
+                    other.checked = false;
+                }
+            });
+        }
+
+    });
+});
+
+
+</script>
