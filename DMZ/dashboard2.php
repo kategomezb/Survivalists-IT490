@@ -212,6 +212,8 @@
 
 <script>
 
+let pickedItem = null;
+
 // here im trying to select all the checkboxes inputs that are on the userFilters.
 // To understand querySelectorAll i refrenced: https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
 document.querySelectorAll("input[name='userFilters[]']").forEach(cb => {
@@ -244,6 +246,28 @@ function toggleDetails(id){
         el.style.display = "none";
     }
 
+}
+
+// added this new func to handle  the right part
+function pickItem(itemData, cardIndex) {
+
+    // my ref for the parse https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+     pickedItem = JSON.parse(decodeURIComponent(itemData));
+ 
+    document.querySelectorAll(".resultCard").forEach(card => {
+        card.classList.remove("selected");
+    });
+    document.getElementById("card-" + cardIndex).classList.add("selected");
+     let name = pickedItem.name ?? pickedItem.title; 
+    document.getElementById("selectedMediaPreview").innerHTML = `
+        <b>${name}</b><br>
+         
+        <span style="color:#888;font-size:12px;">${pickedItem.type} · ID: ${pickedItem.id}</span>
+    `;
+ 
+    // this lets the button to be available when our select something 
+    document.getElementById("submitPostBtn").disabled = false;
+    document.getElementById("postFeedback").textContent = "";
 }
 
 // i used this this link to understand the EventListener better. Which allowed me to listen for the submit even when the user seachr something
