@@ -100,7 +100,6 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 <div class="profile-intro">
                     <div class="title-box">
                         <h3>Following</h3>
-                        <a href="#">View Following</a>
                     </div>
 
                     <?php
@@ -235,60 +234,74 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                     <div class="friends-box">
                         <?php
 
-                        // FOREACH LOOP THAT WILL GO THROUGH THE DIFFERENT REGISTERED USER OBJECTS' USERNAMES IN REG_USERS COLLECTION (MINUS THE LOGGED IN USER)
-                        // show top 5 results
-                        // REF: https://www.tutorialspoint.com/php_mongodb/php_mongodb_limit_records.htm
+                            // FOREACH LOOP THAT WILL GO THROUGH THE DIFFERENT REGISTERED USER OBJECTS' USERNAMES IN REG_USERS COLLECTION (MINUS THE LOGGED IN USER)
+                            // REF: https://www.tutorialspoint.com/php_mongodb/php_mongodb_limit_records.htm
 
-                        $filter = [];
+                            // scrapped and fixed original follow button logic 
 
-                        $options = ['limit' => 5];
-                        
-                        // goes through reg_users database and limits five
-                        $users = $userCollection->find($filter, $options);
+                            $filter = [];
 
-                        // loop through each of the five users
-                        foreach ($users as $document) {
-                            // echo "<i class='fa-solid fa-user'>";
-                            // echo "</i>";
-
-                            echo "<div class='user-curation'>";
-
-                            // for the current user in the list of five, retrieve and store their username
-                            $recommendUsername = $document['username'];
-
-                            // check to make sure one of the usernames are not the logged in user's
-                            if ($recommendUsername != $username) {
-                                echo $recommendUsername;
-                                echo "&nbsp";
-                                echo "<a>";
-                                
-                                // follow button
-                                // if clicked update the User's following list to include the current user object it recommended
-                                
-                                if(isset($_POST['btn-follow'])) {
-                                    $user->updateOne(
-                                        ["username" => $username],
-                                            ['$addToSet' => [ // ensures multiple follow-btn clicks won't add the current user multiple times in the logged in user's following 
-                                                "following" => $recommendUsername
-                                                ]
-                                            ]
-                                    );
-                                }
-
-                                echo "<form method='post'>";
-                                echo "<input type='submit' name='btn-follow' value='Follow'>"; // will need to change this to a button that calls followUser() in serverRabbitMQ.php
-                                echo "</form>";
-
-                                // if button is clicked, add the recommendUsername to the signed in User's following array
-                                
-
+                            $options = ['limit' => 5]; // show top 5 results
                             
-                                echo "</a>";
-                            } else {
-                            }
-                            echo "</div>";
-                        };
+                            // goes through reg_users database and limits to five
+                            $users = $userCollection->find($filter, $options);
 
+                            if(isset($user['following'])) {
+                                $followingList = $user['following']; // retrieve logged in user's following list
+                            } else {
+                                $followingList = [];
+                            }
+
+                            // loop through each of the five recommended users
+                            foreach($users as $document) {
+
+                                $recommendUsername = $document['username']; // username of the current user during iteration
+
+                                // needs to make sure recommended user is not logged in user
+                                if($recommendUsername != $username) {
+
+                                    // populate the table w/ current user pointer's username
+                                    echo "<div class='user-curation'>";
+                                    echo $recommendUsername;
+                                    echo "&nbsp";
+
+                                    $isFollowing = false; 
+
+                                    // loop through the following list of logged in user
+
+                                    // for every person followed in followingList
+                                    foreach($followingList as $userFollowed) {
+                                        if($userFollowed == $recommendUsername) { // check to see if current user pointer in following array == one of the recommended usernames
+                                            $isFollowing = true;
+                                            break; 
+                                        }
+                                    }
+
+                                    // follow/unfollow button
+                                    if($isFollowing) {
+
+                                        echo "<form method='post' style='display:inline'>";
+                                        echo "<input type='hidden' name='unfollow_user' value='";
+                                        echo $recommendUsername; //when pressed, send the affected username to remove from user's following array
+                                        echo "'>";
+                                        echo "<button type='submit'>Unfollow</button>";
+                                        echo "</form>;";
+
+                                    } else {
+
+                                        echo "<form method='post' style='display:inline'>";
+                                        echo "<input type='hidden' name='follow_user' value='";
+                                        echo $recommendUsername; //vice versa
+                                        echo "'>";
+                                        echo "<button type='submit'>Follow</button>";
+                                        echo "</form>;";                
+
+                                    }
+
+                                    echo "</div>";
+
+                                }
+                            }
                         ?>
                     </div>
                 </div>
@@ -304,7 +317,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 </div> -->
 
                 <!-- integrate kate's search bar here -->
-                <a href="mediaSearch.php"><button>+</button></a>
+                <a href="/DMZ/mediaSearch.php"><button>+</button></a>
 
                 <?php
                 $userPosts = $user['posts'];
