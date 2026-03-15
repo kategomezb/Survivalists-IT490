@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksforgeeks.org/php/php-cookies/
     header('Location: login.html');
@@ -12,6 +12,46 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
     $userCollection = $database->reg_users;
 
     $user = $userCollection->findOne(['keySession' => $_COOKIE['SessionKey']]);
+    
+    $username = $user['username'];
+
+    // logic for following user when follow button pressed
+    if(isset($_POST['follow_user'])){
+
+        $followUser = $_POST['follow_user']; // retrieve userFollowed username
+
+        // remove the sent username from the logged in user's following array
+        $userCollection->updateOne(
+            ["username" => $username],
+            [
+                '$addToSet' => [
+                    "following" => $followUser
+                ]
+            ]
+        );
+
+        header("Location: ".$_SERVER['PHP_SELF']);
+        exit();
+    }
+
+    // logic for unfollowing user when unfollow button pressed
+    if(isset($_POST['unfollow_user'])){
+
+        $unfollowUser = $_POST['unfollow_user']; // retrieve userUnfollowed username
+
+        // remove the sent username from the logged in user's following array
+        $userCollection->updateOne(
+            ["username" => $username],
+            [
+                '$pull' => [
+                    "following" => $unfollowUser
+                ]
+            ]
+        );
+
+        header("Location: ".$_SERVER['PHP_SELF']);
+        exit();
+    }
 }
 ?>
 
