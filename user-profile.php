@@ -317,7 +317,8 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 </div> -->
 
                 <!-- integrate kate's search bar here -->
-                <a href="/DMZ/mediaSearch.php"><button>+</button></a>
+                <!-- created button class for styling -->
+                <a href="/DMZ/mediaSearch.php"><button class='createPost-btn'>+</button></a>
 
                 <?php
                 $userPosts = $user['posts'];

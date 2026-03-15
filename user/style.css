@@ -614,3 +614,16 @@ nav {
 .unfollow-btn:hover {
     background-color: #F92C85;
 }
+
+.createPost-btn {
+    color: #5ebec4;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.createPost-btn:hover {
+    background-color: #5ebec4;
+    color: #fff;
+}
