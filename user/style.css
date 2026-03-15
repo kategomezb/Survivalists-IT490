@@ -99,7 +99,6 @@ nav {
 }
 
 .left-sidebar {
-    /* background: #F92C85; */
     flex-basis: 25%;
     position: sticky;
     top: 70px;
@@ -107,7 +106,6 @@ nav {
 }
 
 .right-sidebar {
-    /* background: #F92C85; */
     flex-basis: 25%;
     position: sticky;
     top: 70px;
@@ -164,6 +162,7 @@ nav {
     margin-bottom: 18px;
 }
 
+/* can use right side bar for future deliverables */
 .right-sidebar h4 {
     font-weight: 600;
     font-weight: 16px;
@@ -214,12 +213,6 @@ nav {
     padding: 4px 0;
 }
 
-.sidebar-ads {
-    width: 100%;
-    margin-bottom: 20px;
-    border-radius: 4px;
-}
-
 .online-list {
     display: flex;
     align-items: center;
@@ -240,68 +233,6 @@ nav {
 .online-list .online::after {
     top: unset;
     bottom: 5px;
-}
-
-.story-gallery {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.story {
-    flex-basis: 18%;
-    padding-top: 32%;
-    position: relative;
-    background-position: center;
-    background-size: cover;
-    border-radius: 10px;
-}
-
-.story img {
-    position: absolute;
-    width: 45px;
-    border-radius: 50%;
-    top: 10px;
-    left: 10px;
-    border-radius: 5px solid #626252;
-}
-
-.story p {
-    position: absolute;
-    bottom: 10px;
-    width: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-}
-
-.story-self {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(../images/status-1.png);
-}
-
-.story1 {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(../images/status-2.png);
-}
-
-.story2 {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(../images/status-3.png);
-}
-
-.story3 {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(../images/status-4.png);
-}
-
-.story4 {
-    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.5)), url(../images/status-5.png);
-}
-
-.story.story-self img {
-    top: unset;
-    left: 50%;
-    bottom: 40px;
-    transform: translateX(-50%);
-    border: 0;
-    width: 35px;
 }
 
 .write-post-container {
@@ -435,43 +366,12 @@ nav {
     color: #9a9a9a;
 }
 
-.load-more-btn {
-    display: block;
-    margin: auto;
-    cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid #9a9a9a;
-    color: #626262;
-    background: transparent;
-    border-radius: 4px;
-}
-
 .footer {
     text-align: center;
     color: #9a9a9a;
     padding: 10px 0 20px;
     font-size: 13px;
 }
-
-.settings-menu {
-    position: absolute;
-    width: 90%;
-    max-width: 350px;
-    height: 500px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
-    overflow: hidden;
-    top: 108%;
-    right: 5%;
-    /* max-height: 0; */
-    /* transition: max-height 0.3s; */
-}
-
-/* 
-.settings-menu-height {
-    max-height: 450px;
-} */
 
 .user-profile a {
     font-size: 12px;
@@ -667,28 +567,9 @@ nav {
     justify-content: space-between;
 }
 
-/* .photo-box {
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    grid-gap: 10px;
-    margin-top: 15px;
-} */
-
-/* .photo-box div img {
-    width: 100%;
-    cursor: pointer;
-} */
-
 .profile-intro p {
     font-size: 14px;
 }
-
-/* .friends-box {
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    grid-gap: 10px;
-    margin-top: 15px;
-} */
 
 .friends-box div img {
     width: 100%;
@@ -704,4 +585,32 @@ nav {
     position: absolute;
     bottom: 0;
     left: 0;
+}
+
+.follow-btn {
+    width: 5rem;
+    border-radius: 20px;
+    border: solid 1px #5EBEC4;
+    font-size: small;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: #5EBEC4;
+}
+
+.follow-btn:hover {
+    background-color: #5EBEC4;
+}
+
+.unfollow-btn {
+    width: 5rem;
+    border-radius: 20px;
+    border: solid 1px #F92C85;
+    font-size: small;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: #F92C85;
+}
+
+.unfollow-btn:hover {
+    background-color: #F92C85;
 }

@@ -284,7 +284,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                                         echo "<input type='hidden' name='unfollow_user' value='";
                                         echo $recommendUsername; //when pressed, send the affected username to remove from user's following array
                                         echo "'>";
-                                        echo "<button type='submit'>Unfollow</button>";
+                                        echo "<button type='submit' class='unfollow-btn'>Unfollow</button>"; // button styling
                                         echo "</form>;";
 
                                     } else {
@@ -293,7 +293,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                                         echo "<input type='hidden' name='follow_user' value='";
                                         echo $recommendUsername; //vice versa
                                         echo "'>";
-                                        echo "<button type='submit'>Follow</button>";
+                                        echo "<button type='submit' class='follow-btn'>Follow</button>"; // diff button styling for unfollowing
                                         echo "</form>;";                
 
                                     }
