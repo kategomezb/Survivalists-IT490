@@ -44,7 +44,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 <li><a href="feed.php">Feed</a></li>
                 &nbsp;
                 &nbsp;
-                <li><a href="dashboardV2.php">Search Library</a></li>
+                <li><a href="dashboard2.php">Search Library</a></li>
             </ul>
         </div>
         <div class="nav-right">
