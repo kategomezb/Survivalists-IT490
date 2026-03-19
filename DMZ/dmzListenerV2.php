@@ -1,12 +1,12 @@
 <?php 
 
-require_once('../includes/path.inc');
-require_once('../includes/get_host_info.inc');
-require_once('../includes/rabbitMQLib.inc');
-require __DIR__ . '/../../vendor/autoload.php';
+require_once('../path.inc');
+require_once('../get_host_info.inc');
+require_once('../rabbitMQLib.inc');
+require '../../vendor/autoload.php';
 
 
-$uri = 'mongodb://100.105.160.23:27017/'; // use this for local testing: 127.0.0.1
+$uri = 'mongodb://100.105.160.23:27017/';
 $mongoClient = new MongoDB\Client($uri);
 $database = $mongoClient->survivalists_db;
 $tidalCollection = $database->tidal_db;
@@ -285,7 +285,7 @@ function requestProcessor($request)
     return "Unknown request";
 }
 
-$server = new rabbitMQServer(__DIR__ . "/../testRabbitMQ.ini","testDMZ");
+$server = new rabbitMQServer("testRabbitMQ.ini","testDMZ");
 echo "RabbitMQ Server Started".PHP_EOL;
 $server->process_requests('requestProcessor');
 exit();
