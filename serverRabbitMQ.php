@@ -6,14 +6,8 @@ require_once('includes/get_host_info.inc');
 require_once('includes/rabbitMQLib.inc');
 require '../vendor/autoload.php';
 
-// teacher had this on the orginal code
-//function login($user,$pass){
-	//TODO validate user credentials
-	//return true;
-//}
-
 	//server to MongoDB connection
-	$uri = 'mongodb://100.105.160.23:27017/';
+	$uri = 'mongodb://100.105.160.23:27017/'; // for local testing: 127.0.0.1
 	$client = new MongoDB\Client($uri);
 	$db = $client->survivalists_db;
 
@@ -25,85 +19,256 @@ function createSessionKey($length = 32) {
     return bin2hex(random_bytes($length / 2));
 }
 
-// this one confirms that the request works (same idea as register)
+
+function registration($username, $password) {
+    global $db;
+
+    $userCollection =  $db->reg_users;
+    
+    $existingUser = $userCollection->findOne(array('username' => $username));
+    if ($existingUser) {
+        return array("returnCode" => '1', "message" => "The username already exists.");
+    }
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    
+
+    try { 
+        $userCollection->insertOne(array(
+        "username" => $username,
+        "password" => $hashedPassword,
+        "session_key" => null,
+        "sessionExpiration" => null,
+        "library" => [
+                "favoriteTracks" => [ // needs to actively populate array as more tracks are added to favorites
+                    // [
+                    //     "title" => null, 
+                    //     "artist" => null
+                    // ] 
+                ],
+                "favoriteArtists" => [ // needs to actively populate array as more tracks are added to favorites
+                    // [
+                    //     "artist" => null
+                    // ] 
+                ],
+                "favoriteAlbums" => [ // needs to actively populate array as more tracks are added to favorites
+                    // [
+                    //     "album" => null, "year" => null
+                    // ]
+                ]
+        ],
+        "posts" => []
+    ));
+
+	print_r(array('returnCode' => '0', 'message' => 'The user was registered.', 'username' => $username, 'password' => $password));
+
+    return array("returnCode" => '0', "message" => "The user was registered.");
+    } catch(Exception $e) {
+        print_r(array('returnCode' => '1', 'message' => 'The user was not registered.', 'username' => $username, 'password' => $password));
+
+    return array("returnCode" => '1', $e->getMessage());
+    }
+}
+
 function login($username, $password) {
 	global $db;
-	
-	$epochTime = time();
-    file_put_contents("debugLogin.txt", "$username login at $epochTime\n", FILE_APPEND);
 
-	$userData = $db->reg_users;
+	$userCollection = $db->reg_users;
 
-	// For this part i want to check if the user name exists on our db. For the findOne i found the reference here: 
-	// https://www.mongodb.com/docs/php-library/current/reference/method/MongoDBCollection-findOne/?msockid=1d1f71cd47f763db031160e646de6252
-	$foundUser = $userData->findOne(['username' => $username]);
+	$query = array('username' => $username); // 'password' => $password);
+	$user = $userCollection->findOne($query);
 
-	if ($foundUser === null) {
-        $messageError = "The user doesn't exist. Maybe register first.";
-         $numberResult = 1;
-        $statusMessage = "error";
-        return array(
-            "message" => $messageError,
-            "resultNumber" => $numberResult,
-            "status" => $statusMessage
-        );
-    }
+	if($user && password_verify($password, $user['password'])) { 
+		echo "User was successfully logged in.";
 
-    $storedPassword = $foundUser['password'];
+		$session_key = createSessionKey(); // session_key is the variable holding generated key
+		$expiration = time() + 3600; // Professor Kehoe said to utilize epoch
 
-    if (password_verify($password, $storedPassword) === false) {
-        $messageError = "Wrong password. Please try again.";
-        $codeFailed = 2;
-         $statusMessage = "error";
+		$userCollection->updateOne(
+			["username" => $username],
+        		['$set' => [
+				"session_key" => $session_key, // NOTE: keySession is database's session key variable,  session_key is server's variable
+        			"sessionExpiration" => $expiration
+			]]
+		);
+                print_r(array('returnCode' => '0', 'message' => 'User was logged in successfully.', 'username' => $username, 'session_key' => $session_key));
 
-        return array(
-            "resultNumber" => $codeFailed,
-            "status" => $statusMessage,
-            "message" => $messageError
-        );
-    }
-	
-	// this is use to generate the unique session key for the login
-	 $ourSessionKey = createSessionKey();
-	
-     $userData->updateOne(
-        ['username' => $username],
-        ['$set' => ['session_key' => $ourSessionKey]]
-    );
+    	return array("returnCode" => '0', "session_key" => $session_key, "message" => "User was logged in successfully.");
 
-    // last thing is the response for the successful login
-    $messageSuccess = "Good job! " . $username . " was able to login.";
-    $numberResult = 0;
-    $statusMessage = "success";
+	} else {
 
-    return array(
-        "status" => $statusMessage,
-        "message" => $messageSuccess,
-        "session_key" => $ourSessionKey,
-        "resultNumber" => $numberResult
-    );
+                print_r(array("returnCode" => '1', "message" => "Invalid login."));
+
+        return array("returnCode" => '1', "message" => "Invalid login.");
+
+	}
 }
 
-//This is to prove that my register request reaches the server and comes back correctly.
-function register($username, $password) {
-	global $db;
-	
-	$collection = $db->reg_users;
-	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+// populates postCollection everytime a user posts something
+function createPost($session_key, $content, $postedAt) {
+    global $db;
 
-	$result = $collection->insertOne(
-		[
-		'username' => $username,
-		'password' => $hashed_password
-		]
-	);
-    // TEMP: just confirm the request works
-    return array(
-		"status" => "success",
-        "return_code" => 0,
-        "message" => "The register request was received for " . $username
-    );
+    $postCollection = $db->posts_db;
+
+    // use session key to identify uniquely logged in user
+    // will search database by session_key and retrieve attached user's username/id
+
+	// logic from login method: $query = array('username' => $username); // 'password' => $password);
+	                         // $user = $userCollection->findOne($query);
+
+    $query = array('session_key' => $session_key);
+	$user = $userCollection->findOne($query);
+
+    $username = $user['username'];
+
+    $postCollection->insertOne(array(
+        "username" => $username,
+        "media" => $media,
+        "content" => $content,
+        "postedAt" => $postedAt,
+    ));
+
+    print_r(array('returnCode' => '0', 'message' => 'The post was created.'));
+
+    return array("returnCode" => '0', "message" => 'The post was created.');
 }
+
+// user profile curation with albums, artists, tracks
+
+// passing $session_key to access user object
+function addFavoriteTrack($session_key, $title, $artist) {
+    global $db;
+
+    $userCollection = $db->reg_users;
+
+    // access stored session key
+    // find corresponding User object in reg_users database w/ that session key
+    // access that User object and store its username
+
+    $query = array('session_key' => $session_key);
+    print_r(array('query' => $query)); // stack tracing for NULL error
+
+	$user = $userCollection->findOne($query);
+    print_r(array('user' => $user)); // stack tracing for NULL error
+
+    // stack tracing for NULL error
+    if(!$user) {
+        print_r(array('message' => "session_key cannot be traced back to user"));
+    } else {
+        print_r(array('message' => "user's session key authenticated"));
+    }
+
+    $username = $user['username'];
+    print_r(array('username' => $username)); // stack tracing for NULL error
+
+
+    // mongoDB ref for appending array elements: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+
+    $userCollection->updateOne(
+        ["username" => $username],
+        [ 
+            '$push' => [
+                    "library.favoriteTracks" => [
+                        "title" => $title,
+                        "artist" => $artist
+                                                ]
+                    ]   
+        ]
+    );
+
+    print_r(array('returnCode' => '0', 'message' => "$title by $artist was successfully added to favorites."));
+
+    return array("returnCode" => '0', 'message' => "$title by $artist was successfully added to favorites.");
+}
+
+function addFavoriteArtist($session_key, $artist) {
+    global $db;
+
+    $userCollection = $db->reg_users;
+
+    // access stored session key
+    // find corresponding User object in reg_users database w/ that session key
+    // access that User object and store its username
+
+    $query = array('session_key' => $session_key);
+    print_r(array('query' => $query)); // stack tracing for NULL error
+
+	$user = $userCollection->findOne($query);
+    print_r(array('user' => $user)); // stack tracing for NULL error
+
+    // stack tracing for NULL error
+    if(!$user) {
+        print_r(array('message' => "session_key cannot be traced back to user"));
+    } else {
+        print_r(array('message' => "user's session key authenticated"));
+    }
+
+    $username = $user['username'];
+    print_r(array('username' => $username)); // stack tracing for NULL error
+
+
+    // mongoDB ref for appending array elements: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+
+    $userCollection->updateOne(
+        ["username" => $username],
+        [ 
+            '$push' => [
+                    "library.favoriteArtists" => [
+                                                    "artist" => $artist
+                                                ]
+                    ]   
+        ]
+    );
+
+    print_r(array('returnCode' => '0', 'message' => "$artist was successfully added to favorites."));
+
+    return array("returnCode" => '0', 'message' => "$artist was successfully added to favorites.");
+}
+
+function addFavoriteAlbum($session_key, $album, $artist) {
+    global $db;
+
+    $userCollection = $db->reg_users;
+
+    // access stored session key
+    // find corresponding User object in reg_users database w/ that session key
+    // access that User object and store its username
+
+    $query = array('session_key' => $session_key);
+    print_r(array('query' => $query)); // stack tracing for NULL error
+
+	$user = $userCollection->findOne($query);
+    print_r(array('user' => $user)); // stack tracing for NULL error
+
+    // stack tracing for NULL error
+    if(!$user) {
+        print_r(array('message' => "session_key cannot be traced back to user"));
+    } else {
+        print_r(array('message' => "user's session key authenticated"));
+    }
+
+    $username = $user['username'];
+    print_r(array('username' => $username)); // stack tracing for NULL error
+
+
+    // mongoDB ref for appending array elements: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+
+    $userCollection->updateOne(
+        ["username" => $username],
+        [ 
+            '$push' => [
+                    "library.favoriteAlbums" => [
+                                                    "album" => $album,
+                                                    "artist" => $artist
+                                                ]
+                    ]   
+        ]
+    );
+
+    print_r(array('returnCode' => '0', 'message' => "$album was successfully added to favorites."));
+
+    return array("returnCode" => '0', 'message' => "$album was successfully added to favorites.");
+}
+
 // Just to simulate the validation for now -- this will be replace with db
 function validate($session_id) {
     global $db;
@@ -255,13 +420,33 @@ function request_processor($req){
 
 	$type = $req['type'];
 	switch($type){
+		case "registration":
+			return registration($req['username'], $req['password']);
+
 		case "login":
 			return login($req['username'], $req['password']);
+
+		case "createPost":  // will generate new post entry for user and populate post collectio
+			return createPost($req['username'], $req['media'], $req['content'], $req['postedAt']);
+		
+		// will search track library and populate selected track to user_library
+        // FIXED: null username field updated $request[username] to session_key 
+        case "addFavoriteTrack": 
+            return addFavoriteTrack($req['session_key'],$req['title'], $req['artist']);
+
+        case "addFavoriteArtist": // will search artist library and populate selected artist to user_library
+            return addFavoriteArtist($req['session_key'],$req['artist']);
+
+        case "addFavoriteAlbum": // will search album library and populate selected album to user_library
+            return addFavoriteAlbum($req['session_key'],$req['album'], $req['artist']);
+
+        case "getFeed":
+            return getFeed($req['session_key'],$req['media'], $req['content'], $req['postedAt']);
+		
 		//tells rabbitmq server what function to run when a registration request comes in
-		case "register":
-            return register($req['username'], $req['password']);
 		case "validate_session":
 			return validate($req['session_id']);
+		
 		// review case
 		case "review":
 			return review(
@@ -271,6 +456,7 @@ function request_processor($req){
 				$req['rating'],
 				$req['review_text'] ?? ''
 			);
+
 		// recommendation case
 		case "recommendation":
 			return recommendation($req['session_key']);
