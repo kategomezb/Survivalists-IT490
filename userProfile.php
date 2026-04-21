@@ -5,7 +5,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
     header('Location: login.html');
     exit();
 } else {
-    $uri = "mongodb://100.105.160.23:27017/";
+    $uri = "mongodb://100.123.148.17:27017/";
 
     $client = new MongoDB\Client($uri);
     $database = $client->survivalists_db;
@@ -279,7 +279,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
 
                             $filter = [];
 
-                            $options = ['limit' => 5]; // show top 5 results
+                            $options = ['limit' => 5]; // show top 5 results 
                             
                             // goes through reg_users database and limits to five
                             $users = $userCollection->find($filter, $options);
@@ -397,8 +397,11 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
 
 
                     echo "<p class='post-text'>";
-                    echo $media;
-                    echo "&nbsp";
+                    $mediaData = json_decode($media, true);
+                    $mediaTitle = $mediaData['title'] ?? $mediaData['name'];
+                    echo $mediaData['id'] . " | " . $mediaTitle . " | " . $mediaData['type'];
+                    //echo "&nbsp";
+                    echo "<br>";
                     echo $content;
                     echo "</p>";
 

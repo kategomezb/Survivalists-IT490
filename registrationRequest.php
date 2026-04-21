@@ -11,7 +11,7 @@ if (!isset($_POST['username']) || !isset($_POST['password'])) {
 $userInput = $_POST['username'];
 $passwordInput = $_POST['password'];
 
-$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+$client = new rabbitMQClient("testRabbitMQ.ini", "testQA");
 
 //this will show up on the queue
 $registration = array(

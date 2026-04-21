@@ -3,10 +3,10 @@
 require_once('../path.inc');
 require_once('../get_host_info.inc');
 require_once('../rabbitMQLib.inc');
-require '../../vendor/autoload.php';
+require '../vendor/autoload.php';
 
 
-$uri = 'mongodb://100.105.160.23:27017/';
+$uri = 'mongodb://100.123.148.17:27017/';
 $mongoClient = new MongoDB\Client($uri);
 $database = $mongoClient->survivalists_db;
 $tidalCollection = $database->tidal_db;
@@ -214,9 +214,9 @@ function searchWithFilter($artist,$type){
 
     // Commenting this out because is not working and its making my the search failed.
 
-    /* 
+     
     global $tidalCollection;
-
+    /*
     $search = $tidalCollection->findOne(['userInput'=>$artist]);
 
     //trying new logic because if we search the same artist again, its giving us an empty array()
@@ -279,6 +279,9 @@ function searchWithFilter($artist,$type){
     // Implementing this to fix the issue on the commented logic that is above. This will call the function
     // and it will search for the artist and it will store the response on the data ($data) 
     $data = userSearch($artist);
+    $tidalCollection->insertOne(['userInput'=>$artist, 'results'=>$data, 'time'=>time()]);
+             echo "Added the new results to MongoDB".PHP_EOL;
+
     //print_r($data['included']);
     switch($type){
         case 'artists': return filterArtists($data);
@@ -313,7 +316,7 @@ function requestProcessor($request)
 }
 
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testDMZ");
+$server = new rabbitMQServer("testRabbitMQ.ini","testQA");
 echo "RabbitMQ Server Started".PHP_EOL;
 $server->process_requests('requestProcessor');
 exit();

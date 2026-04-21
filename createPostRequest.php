@@ -30,7 +30,7 @@ if (!isset($input['media']) || !isset($input['content'])) {
 }
 
 
-$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+$client = new rabbitMQClient("testRabbitMQ.ini", "testQA");
 
 
 // media arrives as an array (decoded from JSON object); re-encode it as a JSON
@@ -55,4 +55,3 @@ $serverResponse = $client->send_request($createPostRequest);
 // Return whatever the server sent back so the front-end can read returnCode
 echo json_encode($serverResponse);
 ?>
-

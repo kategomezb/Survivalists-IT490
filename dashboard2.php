@@ -166,7 +166,7 @@
             <div class="profileUser">
                 <!-- i got the image from here: https://unsplash.com/photos/collection-of-various-music-album-covers-998pvuxqK6Y -->
                 <img src="images/dashboardImage.jpg" alt="User">
-                <h1>Welcome back, Survivalist!</h1>
+                <h1>Welcome back to SocialTune!</h1>
             </div>
             <span class="status">SESSION ACTIVE</span>
         </div>

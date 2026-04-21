@@ -6,7 +6,7 @@
 
 	// $username = $_POST['username'];
 
-	$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+	$client = new rabbitMQClient("testRabbitMQ.ini", "testQA");
 
 	$addFavoriteArtistRequest = [
 		'type' => 'addFavoriteArtist',
@@ -25,6 +25,6 @@
 <!DOCTYPE html>
 <html>
 	<body>
-                                                <a href="dashboard.php" class="href">Back to dashboard</a>
+                                                <a href="userProfile.php" class="href">Back to Profile</a>
 	</body>
 </html>

@@ -220,6 +220,14 @@ nav {
 .user-profile {
     display: flex;
     align-items: center;
+    gap: 6px;
+
+}
+
+.user-profile i {
+    font-size: 30px;
+    align-self: flex-start;
+    margin-top: 1px;
 }
 
 .user-profile img {
@@ -231,13 +239,18 @@ nav {
 .user-profile p {
     margin-bottom: -5px;
     font-weight: 500;
-    color: #626262;
+    color: #333;
 }
 
 .user-profile small {
     font-size: 12px;
 }
 
+.user-curation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .post-input-container {
     padding-left: 55px;
     padding-top: 20px;
@@ -278,6 +291,7 @@ nav {
     padding: 20px;
     color: #626262;
     margin: 20px 0;
+    border-left: 6px solid #5EBEC4;
 }
 
 .user-profile span {
@@ -399,17 +413,25 @@ nav {
 .profile-details {
     background: #fff;
     padding: 20px;
-    border-radius: 4px;
+    border-radius: 8px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    border: 1px solid #D3D3D3;
+    border-top: 6px solid #5EBEC4;
 }
 
 .pd-row {
     display: flex;
     align-items: flex-start;
+    gap: 13px;
 }
 
+.fa-circle-user {
+   font-size: 30px;
+   display: inline-block;
+   margin-top: 10px;
+}
 .pd-image {
     width: 100px;
     margin-right: 20px;
@@ -490,7 +512,14 @@ nav {
     background: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 4px;
+    border-radius: 12px;
+    border-left: 6px solid #5EBEC4;
+}
+
+.profile-intro p {
+    margin-top: 7px;
+    margin-bottom: 10px;
+    color: black;
 }
 
 .profile-intro h3 {
@@ -561,6 +590,12 @@ nav {
     left: 0;
 }
 
+.friends-box {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   margin-top; 11px;
+} 
 .follow-btn {
     width: 5rem;
     border-radius: 20px;
@@ -573,6 +608,7 @@ nav {
 
 .follow-btn:hover {
     background-color: #5EBEC4;
+    color: white;
 }
 
 .unfollow-btn {
@@ -587,6 +623,7 @@ nav {
 
 .unfollow-btn:hover {
     background-color: #F92C85;
+    color: white;
 }
 
 .createPost-btn {

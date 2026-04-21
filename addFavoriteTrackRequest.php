@@ -4,7 +4,7 @@
 	require_once('get_host_info.inc');
 	require_once('rabbitMQLib.inc');
 
-	$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+	$client = new rabbitMQClient("testRabbitMQ.ini", "testQA");
 
 	// access stored session key
 	// find corresponding User object in reg_users database w/ that session key

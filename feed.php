@@ -9,7 +9,7 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
     header('Location: login.html');
     exit();
 } else {
-    $uri = "mongodb://100.105.160.23:27017/";
+    $uri = "mongodb://100.123.148.17:27017/";
 
     $client = new MongoDB\Client($uri);
     $database = $client->survivalists_db;
@@ -82,8 +82,8 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
                 echo "<div class='post-container'>";
                 echo "<div class='post-row'>";
                 echo "<div class='user-profile'>";
-                echo "<i class='fa-solid fa-circle-user'>";
-                echo "</i>";
+                echo "<i class='fa-solid fa-circle-user'></i>";
+                //echo "</i>";
                 // <!-- will modify to user icons instead of images -->
                 echo "<div>";
                 // <!-- <p>RETRIEVE USERNAME FROM POST DATABASE</p> -->
@@ -110,7 +110,10 @@ if (!isset($_COOKIE['SessionKey'])) { // WEB REFERENCE USED: https://www.geeksfo
 
 
                 echo "<p class='post-text'>";
-                echo $media;
+		$mediaData = json_decode($media, true);
+		$type = $mediaData['type']; 
+                $mediaTitle = $mediaData['title'] ?? $mediaData['name'];
+                echo $mediaData['id'] . " | " . $mediaTitle . " | " . $type;
                 echo "<hr/ style='margin-top: 10px;'>".$content;
                 echo "</p>";
 

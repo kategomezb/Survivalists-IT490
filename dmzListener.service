@@ -1,0 +1,18 @@
+[Unit]
+Description=PHP dmzListener Service
+After=network.target
+Requires=rabbitmq-server.service
+
+[Service]
+Type=simple
+#change user to your own or root
+User=root
+#add small startup delay to allow RabbitMQ to initialize
+ExecStartPre=/bin/sleep 5
+Restart=always
+RestartSec=5
+WorkingDirectory=/var/www/html/DMZ/
+ExecStart=/usr/bin/php /var/www/html/DMZ/dmzListenerV2.php
+
+[Install]
+WantedBy=multi-user.target
